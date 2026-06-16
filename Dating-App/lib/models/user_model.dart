@@ -162,7 +162,7 @@ class UserModel extends Model {
     required VoidCallback updateLocationScreen,
     // Optional functions called on app start
     VoidCallback? signInScreen,
-    VoidCallback? blockedScreen,
+    Function(bool isSuspended, DateTime? end, String? reason)? blockedScreen,
   }) async {
     /// Check user auth
     if (getFirebaseUser != null) {
@@ -171,32 +171,29 @@ class UserModel extends Model {
         /// Check user account in database
         /// if exists check status and take action
         if (userDoc.exists) {
+          final data = userDoc.data()!;
           // Check location data:
           // Get User's latitude & longitude
-          final GeoPoint userGeoPoint = userDoc[USER_GEO_POINT]['geopoint'];
+          final GeoPoint userGeoPoint = data[USER_GEO_POINT]['geopoint'];
           final double latitude = userGeoPoint.latitude;
           final double longitude = userGeoPoint.longitude;
 
           /// Check User Account Status
-          if (userDoc[USER_STATUS] == 'blocked') {
-            // Go to blocked user account screen
-            blockedScreen!();
-          } else {
-            // Update UserModel for current user
-            updateUserObject(userDoc.data()!);
-
-            // Update user device token and subscribe to fcm topic
-            updateUserDeviceToken();
-
-            // Check location data
-            if (latitude == 0.0 && longitude == 0.0) {
-              // Show Update your current location message
-              updateLocationScreen();
-              return;
+          if (data[USER_STATUS] == 'blocked' || data[USER_IS_BANNED] == true) {
+            blockedScreen!(false, null, data[USER_BAN_REASON]);
+          } else if (data[USER_STATUS] == 'suspended' ||
+              data[USER_IS_SUSPENDED] == true) {
+            final DateTime? end = data[USER_SUSPENSION_END_DATE]?.toDate();
+            if (end != null && end.isAfter(DateTime.now())) {
+              blockedScreen!(true, end, "Community Guidelines Violation");
+            } else {
+              // Suspension expired
+              updateUserData(
+                  userId: getFirebaseUser!.uid, data: {USER_STATUS: 'active', USER_IS_SUSPENDED: false});
+              _proceedAuth(data, latitude, longitude, updateLocationScreen, homeScreen);
             }
-
-            // Go to home screen
-            homeScreen();
+          } else {
+            _proceedAuth(data, latitude, longitude, updateLocationScreen, homeScreen);
           }
           // Debug
           debugPrint("firebaseUser exists");
@@ -211,6 +208,24 @@ class UserModel extends Model {
       debugPrint("firebaseUser not logged in");
       signInScreen!();
     }
+  }
+
+  void _proceedAuth(Map<String, dynamic> data, double latitude, double longitude, VoidCallback updateLocationScreen, VoidCallback homeScreen) {
+    // Update UserModel for current user
+    updateUserObject(data);
+
+    // Update user device token and subscribe to fcm topic
+    updateUserDeviceToken();
+
+    // Check location data
+    if (latitude == 0.0 && longitude == 0.0) {
+      // Show Update your current location message
+      updateLocationScreen();
+      return;
+    }
+
+    // Go to home screen
+    homeScreen();
   }
 
   /// Verify phone number and handle phone auth
@@ -508,13 +523,25 @@ class UserModel extends Model {
     required String flaggedUserId,
     required String reason,
   }) async {
+    // 1. Create a detailed report in C_REPORTS
+    await _firestore.collection(C_REPORTS).doc().set({
+      'report_id': _firestore.collection(C_REPORTS).doc().id,
+      'reported_user_id': flaggedUserId,
+      'reporter_user_id': user.userId,
+      'reason': reason,
+      'status': 'pending', // pending, reviewed, resolved
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+
+    // 2. Maintain legacy C_FLAGGED_USERS for compatibility
     await _firestore.collection(C_FLAGGED_USERS).doc().set({
       FLAGGED_USER_ID: flaggedUserId,
       FLAG_REASON: reason,
       FLAGGED_BY_USER_ID: user.userId,
       TIMESTAMP: FieldValue.serverTimestamp(),
     });
-    // Update flagged profile status
+
+    // 3. Update flagged profile status
     await updateUserData(userId: flaggedUserId, data: {USER_STATUS: 'flagged'});
   }
 
@@ -735,6 +762,31 @@ class UserModel extends Model {
     }
     debugPrint('Profile Gallery list: ${images.length}');
     return images;
+  }
+
+  /// Calculate Profile Quality Score (completeness)
+  int calculateProfileQualityScore(User user) {
+    int score = 0;
+    // Basic Info (20 points)
+    if (user.userFullname.isNotEmpty) score += 5;
+    if (user.userBio.isNotEmpty) score += 10;
+    if (user.userProfilePhoto.isNotEmpty) score += 5;
+
+    // Academic & Professional (40 points)
+    if (user.userDegree.isNotEmpty) score += 10;
+    if (user.userInstitution.isNotEmpty) score += 10;
+    if (user.userOccupation.isNotEmpty) score += 10;
+    if (user.userIndustry.isNotEmpty) score += 10;
+
+    // Goals & Interests (20 points)
+    if (user.userFutureGoals.isNotEmpty) score += 10;
+    if (user.userResearchInterests.isNotEmpty) score += 10;
+
+    // Lifestyle & Intent (20 points)
+    if (user.userRelationshipIntent.isNotEmpty) score += 10;
+    if (user.userWorkSchedule.isNotEmpty) score += 10;
+
+    return score;
   }
 
   // Sign out

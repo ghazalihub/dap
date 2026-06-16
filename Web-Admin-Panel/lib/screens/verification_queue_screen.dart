@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app_dashboard/constants/constants.dart';
-import 'package:dating_app_dashboard/models/app_model.dart';
 import 'package:dating_app_dashboard/widgets/my_circular_progress.dart';
 import 'package:dating_app_dashboard/widgets/show_scaffold_msg.dart';
 import 'package:flutter/material.dart';
 
 class VerificationQueueScreen extends StatelessWidget {
   const VerificationQueueScreen({Key? key}) : super(key: key);
+
+  static final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +81,10 @@ class VerificationQueueScreen extends StatelessWidget {
       USER_IS_VERIFIED: true,
       USER_VERIFICATION_RANKING_BOOST: 10,
     });
-    showScaffoldMessage(context: context, message: "User verified successfully");
+    showScaffoldMessage(
+        context: context,
+        scaffoldkey: _scaffoldKey,
+        message: "User verified successfully");
   }
 
   void _reject(BuildContext context, String userId) async {
@@ -88,6 +92,9 @@ class VerificationQueueScreen extends StatelessWidget {
       USER_VERIFICATION_STATUS: 'rejected',
       USER_IS_VERIFIED: false,
     });
-    showScaffoldMessage(context: context, message: "Verification rejected");
+    showScaffoldMessage(
+        context: context,
+        scaffoldkey: _scaffoldKey,
+        message: "Verification rejected");
   }
 }

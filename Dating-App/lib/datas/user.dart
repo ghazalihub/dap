@@ -63,6 +63,12 @@ class User {
   final String userVerificationIdNumber;
   final String userVerificationDocumentUrl;
   final int userVerificationRankingBoost;
+  // Trust & Safety
+  final DateTime? userSuspensionEndDate;
+  final bool userIsSuspended;
+  final bool userIsBanned;
+  final int userProfileQualityScore;
+  final String userBanReason;
 
   final Map<String, dynamic>? userGallery;
   final Map<String, dynamic>? userSettings;
@@ -131,6 +137,12 @@ class User {
     required this.userVerificationIdNumber,
     required this.userVerificationDocumentUrl,
     required this.userVerificationRankingBoost,
+    // Trust & Safety
+    this.userSuspensionEndDate,
+    required this.userIsSuspended,
+    required this.userIsBanned,
+    required this.userProfileQualityScore,
+    required this.userBanReason,
   });
 
   /// factory user object
@@ -199,6 +211,12 @@ class User {
       userVerificationIdNumber: doc[USER_VERIFICATION_ID_NUMBER] ?? '',
       userVerificationDocumentUrl: doc[USER_VERIFICATION_DOCUMENT_URL] ?? '',
       userVerificationRankingBoost: doc[USER_VERIFICATION_RANKING_BOOST] ?? 0,
+      // Trust & Safety
+      userSuspensionEndDate: doc[USER_SUSPENSION_END_DATE]?.toDate(),
+      userIsSuspended: doc[USER_IS_SUSPENDED] ?? false,
+      userIsBanned: doc[USER_IS_BANNED] ?? false,
+      userProfileQualityScore: doc[USER_PROFILE_QUALITY_SCORE] ?? 0,
+      userBanReason: doc[USER_BAN_REASON] ?? '',
     );
   }
 }

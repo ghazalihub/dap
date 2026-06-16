@@ -133,6 +133,15 @@ const String USER_VERIFICATION_TYPE = "user_verification_type"; // student, prof
 const String USER_VERIFICATION_ID_NUMBER = "user_verification_id_number";
 const String USER_VERIFICATION_DOCUMENT_URL = "user_verification_document_url";
 const String USER_VERIFICATION_RANKING_BOOST = "user_verification_ranking_boost";
+// Trust & Safety fields
+const String USER_SUSPENSION_END_DATE = "user_suspension_end_date";
+const String USER_IS_SUSPENDED = "user_is_suspended";
+const String USER_IS_BANNED = "user_is_banned";
+const String USER_PROFILE_QUALITY_SCORE = "user_profile_quality_score";
+const String USER_BAN_REASON = "user_ban_reason";
+
+// Collections
+const String C_REPORTS = "Reports";
 
 // Discovery Modes
 enum DiscoveryMode {

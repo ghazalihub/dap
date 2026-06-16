@@ -8,6 +8,7 @@ import 'package:dating_app_dashboard/screens/push_notifications.dart';
 import 'package:dating_app_dashboard/screens/sign_in_screen.dart';
 import 'package:dating_app_dashboard/screens/users_screen.dart';
 import 'package:dating_app_dashboard/screens/verification_queue_screen.dart';
+import 'package:dating_app_dashboard/screens/moderation_center_screen.dart';
 import 'package:dating_app_dashboard/widgets/app_logo.dart';
 import 'package:flutter/material.dart';
 
@@ -70,8 +71,18 @@ class _NavigationDrawerState extends State<MyNavigationDrawer> {
           ),
           const Divider(height: 0),
           ListTile(
+            leading: const Icon(Icons.security_outlined),
+            title: Text("Moderation Center", style: _menuTextStyle),
+            onTap: () {
+              // Go to moderation center screen
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const ModerationCenterScreen()));
+            },
+          ),
+          const Divider(height: 0),
+          ListTile(
             leading: const Icon(Icons.flag_outlined),
-            title: Text("Flagged Users", style: _menuTextStyle),
+            title: Text("Flagged Users (Legacy)", style: _menuTextStyle),
             onTap: () {
               // Go to flagged users screen
               Navigator.of(context).push(

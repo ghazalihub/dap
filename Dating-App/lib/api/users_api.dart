@@ -86,7 +86,7 @@ class UsersApi {
       debugPrint('removeBlockedUsers() -> error: $e');
     });
 
-    /// Sort by Verification, Compatibility, and Recency
+    /// Sort by Verification, Compatibility, Quality, and Recency
     allUsers.sort((a, b) {
       // 1. Ranking Boost (Verification Type)
       final int boostA =
@@ -112,7 +112,19 @@ class UsersApi {
         return scoreB.compareTo(scoreA);
       }
 
-      // 3. Recency
+      // 3. Profile Quality Score
+      final int qualityA = (a.data() as Map<String, dynamic>).containsKey(USER_PROFILE_QUALITY_SCORE)
+          ? a[USER_PROFILE_QUALITY_SCORE]
+          : 0;
+      final int qualityB = (b.data() as Map<String, dynamic>).containsKey(USER_PROFILE_QUALITY_SCORE)
+          ? b[USER_PROFILE_QUALITY_SCORE]
+          : 0;
+
+      if (qualityA != qualityB) {
+          return qualityB.compareTo(qualityA);
+      }
+
+      // 4. Recency
       final DateTime userRegDateA = a[USER_REG_DATE].toDate();
       final DateTime userRegDateB = b[USER_REG_DATE].toDate();
       return userRegDateA.compareTo(userRegDateB);

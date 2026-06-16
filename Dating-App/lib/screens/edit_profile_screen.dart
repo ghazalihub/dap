@@ -1,6 +1,6 @@
-import 'package:dating_app/dialogs/common_dialogs.dart';
 import 'package:dating_app/constants/constants.dart';
 import 'package:dating_app/datas/predefined_choices.dart';
+import 'package:dating_app/dialogs/common_dialogs.dart';
 import 'package:dating_app/dialogs/progress_dialog.dart';
 import 'package:dating_app/helpers/app_localizations.dart';
 import 'package:dating_app/models/user_model.dart';
@@ -356,9 +356,10 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                   const SizedBox(height: 10),
 
                   DropdownButtonFormField<String>(
-                    value: _selectedWorkSchedule!.isEmpty
-                        ? null
-                        : _selectedWorkSchedule,
+                    value:
+                        _selectedWorkSchedule!.isEmpty
+                            ? null
+                            : _selectedWorkSchedule,
                     items: WORK_SCHEDULES.map((val) {
                       return DropdownMenuItem(value: val, child: Text(val));
                     }).toList(),
@@ -542,6 +543,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         USER_SMOKING: _selectedSmoking ?? "",
         USER_DRINKING: _selectedDrinking ?? "",
         USER_SLEEP_SCHEDULE: _selectedSleepSchedule ?? "",
+        USER_PROFILE_QUALITY_SCORE: UserModel().calculateProfileQualityScore(UserModel().user),
       },
       onSuccess: () {
         /// Show success message

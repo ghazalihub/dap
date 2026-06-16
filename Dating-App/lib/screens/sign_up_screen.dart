@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dating_app/api/verification_api.dart';
 import 'package:dating_app/dialogs/common_dialogs.dart';
 import 'package:dating_app/datas/predefined_choices.dart';
 import 'package:dating_app/helpers/app_localizations.dart';
@@ -32,13 +33,13 @@ class SignUpScreenState extends State<SignUpScreen> {
   final _jobController = TextEditingController();
   final _bioController = TextEditingController();
 
-  // New Academic/Professional Controllers
+  // New Identity Controllers
   final _institutionController = TextEditingController();
   final _universityController = TextEditingController();
+  final _collegeController = TextEditingController();
   final _courseController = TextEditingController();
   final _occupationController = TextEditingController();
   final _specializationController = TextEditingController();
-  final _collegeController = TextEditingController();
   final _departmentController = TextEditingController();
   final _graduationYearController = TextEditingController();
 
@@ -328,36 +329,6 @@ class SignUpScreenState extends State<SignUpScreen> {
                       ),
                       const SizedBox(height: 20),
 
-                      /// School field
-                      TextFormField(
-                        controller: _schoolController,
-                        decoration: InputDecoration(
-                          labelText: _i18n.translate("school"),
-                          hintText: _i18n.translate("enter_your_school_name"),
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          prefixIcon: const Padding(
-                            padding: EdgeInsets.all(9.0),
-                            child: SvgIcon("assets/icons/university_icon.svg"),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
-                      /// Job title field
-                      TextFormField(
-                        controller: _jobController,
-                        decoration: InputDecoration(
-                          labelText: _i18n.translate("job_title"),
-                          hintText: _i18n.translate("enter_your_job_title"),
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          prefixIcon: const Padding(
-                            padding: EdgeInsets.all(12.0),
-                            child: SvgIcon("assets/icons/job_bag_icon.svg"),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
                       /// Bio field
                       TextFormField(
                         controller: _bioController,
@@ -471,6 +442,14 @@ class SignUpScreenState extends State<SignUpScreen> {
                         decoration: const InputDecoration(
                             labelText: "Specialization",
                             hintText: "Enter specialization"),
+                      ),
+                      const SizedBox(height: 20),
+
+                      TextFormField(
+                        controller: _departmentController,
+                        decoration: const InputDecoration(
+                            labelText: "Department",
+                            hintText: "Enter department"),
                       ),
                       const SizedBox(height: 20),
 

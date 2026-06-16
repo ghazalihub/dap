@@ -39,8 +39,8 @@ class ProfileCard extends StatelessWidget {
 
     //
     // Get User Birthday
-    final DateTime userBirthday = DateTime(UserModel().user.userBirthYear,
-        UserModel().user.userBirthMonth, UserModel().user.userBirthDay);
+    final DateTime userBirthday = DateTime(user.userBirthYear,
+        user.userBirthMonth, user.userBirthDay);
     // Get User Current Age
     final int userAge = UserModel().calculateUserAge(userBirthday);
 
@@ -180,53 +180,6 @@ class ProfileCard extends StatelessWidget {
                           ),
                         ],
                       ),
-
-                      /// User education
-
-                      // Note: Uncoment the code below if you want to show the education
-
-                      // Row(
-                      //   children: [
-                      //     const SvgIcon("assets/icons/university_icon.svg",
-                      //         color: Colors.white, width: 20, height: 20),
-                      //     const SizedBox(width: 5),
-                      //     Expanded(
-                      //       child: Text(
-                      //         user.userSchool,
-                      //         style: const TextStyle(
-                      //           color: Colors.white,
-                      //           fontSize: 16,
-                      //         ),
-                      //         maxLines: 1,
-                      //         overflow: TextOverflow.ellipsis,
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
-
-                      // const SizedBox(height: 3),
-
-                      // User job title
-                      // Note: Uncoment the code below if you want to show the job title
-
-                      // Row(
-                      //   children: [
-                      //     const SvgIcon("assets/icons/job_bag_icon.svg",
-                      //         color: Colors.white, width: 17, height: 17),
-                      //     const SizedBox(width: 5),
-                      //     Expanded(
-                      //       child: Text(
-                      //         user.userJobTitle,
-                      //         style: const TextStyle(
-                      //           color: Colors.white,
-                      //           fontSize: 16,
-                      //         ),
-                      //         maxLines: 1,
-                      //         overflow: TextOverflow.ellipsis,
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
 
                       page == 'discover'
                           ? const SizedBox(height: 70)

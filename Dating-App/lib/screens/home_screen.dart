@@ -9,7 +9,6 @@ import 'package:dating_app/helpers/app_localizations.dart';
 import 'package:dating_app/helpers/app_notifications.dart';
 import 'package:dating_app/models/user_model.dart';
 import 'package:dating_app/screens/notifications_screen.dart';
-import 'package:dating_app/screens/verification_flow_screen.dart';
 import 'package:dating_app/tabs/conversations_tab.dart';
 import 'package:dating_app/tabs/discover_tab.dart';
 import 'package:dating_app/tabs/matches_tab.dart';
@@ -236,38 +235,6 @@ class HomeScreenState extends State<HomeScreen> {
     _getCurrentUserUpdates();
     _handlePurchaseUpdates();
     _initFirebaseMessage();
-
-    /// Check verification
-    _checkVerification();
-  }
-
-  void _checkVerification() {
-    Future.delayed(const Duration(seconds: 2), () {
-      if (UserModel().user.userVerificationStatus != 'verified' &&
-          UserModel().user.userVerificationStatus != 'pending') {
-        if (mounted) {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => AlertDialog(
-              title: const Text("Identity Verification Required"),
-              content: const Text(
-                  "To ensure a safe and trustworthy academic community, all users must verify their identity. Please complete the verification process."),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const VerificationFlowScreen()));
-                  },
-                  child: const Text("VERIFY NOW"),
-                ),
-              ],
-            ),
-          );
-        }
-      }
-    });
   }
 
   @override

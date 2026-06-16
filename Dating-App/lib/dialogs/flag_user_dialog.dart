@@ -35,11 +35,13 @@ class FlagUserDialogState extends State<FlagUserDialog> {
 
     // Get flag option list
     final List<String> flagOptions = [
-      _i18n.translate("sexual_content"),
-      _i18n.translate("abusive_content"),
-      _i18n.translate("violent_content"),
-      _i18n.translate("inappropriate_content"),
-      _i18n.translate("spam_or_misleading"),
+      "Harassment",
+      "Fake Profile",
+      "Scam",
+      "Spam",
+      "Impersonation",
+      "Abuse",
+      "Inappropriate Content",
       _i18n.translate("other"),
     ];
 
@@ -75,34 +77,26 @@ class FlagUserDialogState extends State<FlagUserDialog> {
         Flexible(
           fit: FlexFit.loose,
           child: SingleChildScrollView(
-            child: RadioGroup(
-              groupValue: _selectedFlagOption,
-              onChanged: (value) {
-                setState(() {
-                  _selectedFlagOption = value.toString();
-                  // Check selected option for other
-                  if (_i18n.translate('other') == value.toString()) {
-                    _isOtherSelected = true;
-                  } else {
-                    _isOtherSelected = false;
-                  }
-                });
-                // Debug
-                debugPrint(
-                  'Selected option: $_selectedFlagOption, _isOtherSelected: $_isOtherSelected',
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: flagOptions.map((selectedOption) {
+                return RadioListTile(
+                  value: selectedOption,
+                  groupValue: _selectedFlagOption,
+                  title: Text(selectedOption),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedFlagOption = value.toString();
+                      if (_i18n.translate('other') == value.toString()) {
+                        _isOtherSelected = true;
+                      } else {
+                        _isOtherSelected = false;
+                      }
+                    });
+                  },
+                  activeColor: Theme.of(context).primaryColor,
                 );
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: flagOptions.map((selectedOption) {
-                  return RadioListTile(
-                    value: selectedOption,
-                    selected: _selectedFlagOption == selectedOption,
-                    title: Text(selectedOption),
-                    activeColor: Theme.of(context).primaryColor,
-                  );
-                }).toList(),
-              ),
+              }).toList(),
             ),
           ),
         ),
@@ -118,7 +112,6 @@ class FlagUserDialogState extends State<FlagUserDialog> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  //labelText: _i18n.translate("other"),
                   hintText: _i18n.translate("type_the_reason"),
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                   prefixIcon: const Icon(Icons.info_outline),
