@@ -101,6 +101,22 @@ class ProfileCard extends StatelessWidget {
                         ],
                       ),
 
+                      /// Academic/Professional Summary
+                      if (user.userDegree.isNotEmpty ||
+                          user.userOccupation.isNotEmpty)
+                        Text(
+                          user.userDegree.isNotEmpty
+                              ? "${user.userDegree} ${user.userStudyYear}"
+                              : user.userOccupation,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+
                       const SizedBox(height: 8.0),
 
                       // User location

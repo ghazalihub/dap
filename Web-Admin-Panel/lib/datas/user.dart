@@ -27,38 +27,99 @@ class User {
   final int userTotalLikes;
   final int userTotalVisits;
   final int userTotalDisliked;
-  final Map<String ,dynamic>? userGallery;
+  // Academic Identity
+  final String userInstitution;
+  final String userUniversity;
+  final String userCollege;
+  final String userDegree;
+  final String userCourse;
+  final String userStudyYear;
+  final String userGraduationYear;
+  final String userAcademicStatus;
+  // Professional Identity
+  final String userOccupation;
+  final String userSpecialization;
+  final String userDepartment;
+  final String userIndustry;
+  // Future Goals
+  final List<String> userFutureGoals;
+  // Research Interests
+  final List<String> userResearchInterests;
+  // Languages
+  final String userNativeLanguage;
+  final List<String> userSpokenLanguages;
+  // Lifestyle
+  final String userWorkSchedule;
+  final String userShiftType;
+  final String userExercise;
+  final String userSmoking;
+  final String userDrinking;
+  final String userSleepSchedule;
+  // Relationship Intent
+  final String userRelationshipIntent;
+
+  final Map<String, dynamic>? userGallery;
   final Map<String, dynamic> userSettings;
 
   // Constructor
   User({
-      required this.userId,
-      required this.userProfilePhoto,
-      required this.userFullname,
-      required this.userGender,
-      required this.userBirthDay,
-      required this.userBirthMonth,
-      required this.userBirthYear,
-      required this.userSchool,
-      required this.userJobTitle,
-      required this.userBio,
-      required this.userPhoneNumber,
-      required this.userEmail,
-      required this.userGallery,
-      required this.userCountry,
-      required this.userLocality,
-      required this.userGeoPoint,
-      required this.userSettings,
-      required this.userStatus,
-      required this.userIsVerified,
-      required this.userLevel, 
-      required this.userRegDate, 
-      required this.userLastLogin, 
-      required this.userDeviceToken,
-      required this.userTotalLikes, 
-      required this.userTotalVisits, 
-      required this.userTotalDisliked, 
-      });
+    required this.userId,
+    required this.userProfilePhoto,
+    required this.userFullname,
+    required this.userGender,
+    required this.userBirthDay,
+    required this.userBirthMonth,
+    required this.userBirthYear,
+    required this.userSchool,
+    required this.userJobTitle,
+    required this.userBio,
+    required this.userPhoneNumber,
+    required this.userEmail,
+    required this.userGallery,
+    required this.userCountry,
+    required this.userLocality,
+    required this.userGeoPoint,
+    required this.userSettings,
+    required this.userStatus,
+    required this.userIsVerified,
+    required this.userLevel,
+    required this.userRegDate,
+    required this.userLastLogin,
+    required this.userDeviceToken,
+    required this.userTotalLikes,
+    required this.userTotalVisits,
+    required this.userTotalDisliked,
+    // Academic Identity
+    required this.userInstitution,
+    required this.userUniversity,
+    required this.userCollege,
+    required this.userDegree,
+    required this.userCourse,
+    required this.userStudyYear,
+    required this.userGraduationYear,
+    required this.userAcademicStatus,
+    // Professional Identity
+    required this.userOccupation,
+    required this.userSpecialization,
+    required this.userDepartment,
+    required this.userIndustry,
+    // Future Goals
+    required this.userFutureGoals,
+    // Research Interests
+    required this.userResearchInterests,
+    // Languages
+    required this.userNativeLanguage,
+    required this.userSpokenLanguages,
+    // Lifestyle
+    required this.userWorkSchedule,
+    required this.userShiftType,
+    required this.userExercise,
+    required this.userSmoking,
+    required this.userDrinking,
+    required this.userSleepSchedule,
+    // Relationship Intent
+    required this.userRelationshipIntent,
+  });
 
   /// factory user object
   factory User.fromDocument(Map<String, dynamic> doc) {
@@ -82,13 +143,44 @@ class User {
       userSettings: doc[USER_SETTINGS],
       userStatus: doc[USER_STATUS],
       userIsVerified: doc[USER_IS_VERIFIED] ?? false,
-      userLevel: doc[USER_LEVEL], 
+      userLevel: doc[USER_LEVEL],
       userRegDate: doc[USER_REG_DATE].toDate(), // Firestore Timestamp
       userLastLogin: doc[USER_LAST_LOGIN].toDate(), // Firestore Timestamp
-      userDeviceToken: doc[USER_DEVICE_TOKEN] ?? '', 
-      userTotalLikes: doc[USER_TOTAL_LIKES] ?? 0, 
-      userTotalVisits: doc[USER_TOTAL_VISITS] ?? 0, 
-      userTotalDisliked: doc[USER_TOTAL_DISLIKED] ?? 0, 
+      userDeviceToken: doc[USER_DEVICE_TOKEN] ?? '',
+      userTotalLikes: doc[USER_TOTAL_LIKES] ?? 0,
+      userTotalVisits: doc[USER_TOTAL_VISITS] ?? 0,
+      userTotalDisliked: doc[USER_TOTAL_DISLIKED] ?? 0,
+      // Academic Identity
+      userInstitution: doc[USER_INSTITUTION] ?? '',
+      userUniversity: doc[USER_UNIVERSITY] ?? '',
+      userCollege: doc[USER_COLLEGE] ?? '',
+      userDegree: doc[USER_DEGREE] ?? '',
+      userCourse: doc[USER_COURSE] ?? '',
+      userStudyYear: doc[USER_STUDY_YEAR] ?? '',
+      userGraduationYear: doc[USER_GRADUATION_YEAR] ?? '',
+      userAcademicStatus: doc[USER_ACADEMIC_STATUS] ?? '',
+      // Professional Identity
+      userOccupation: doc[USER_OCCUPATION] ?? '',
+      userSpecialization: doc[USER_SPECIALIZATION] ?? '',
+      userDepartment: doc[USER_DEPARTMENT] ?? '',
+      userIndustry: doc[USER_INDUSTRY] ?? '',
+      // Future Goals
+      userFutureGoals: List<String>.from(doc[USER_FUTURE_GOALS] ?? []),
+      // Research Interests
+      userResearchInterests:
+          List<String>.from(doc[USER_RESEARCH_INTERESTS] ?? []),
+      // Languages
+      userNativeLanguage: doc[USER_NATIVE_LANGUAGE] ?? '',
+      userSpokenLanguages: List<String>.from(doc[USER_SPOKEN_LANGUAGES] ?? []),
+      // Lifestyle
+      userWorkSchedule: doc[USER_WORK_SCHEDULE] ?? '',
+      userShiftType: doc[USER_SHIFT_TYPE] ?? '',
+      userExercise: doc[USER_EXERCISE] ?? '',
+      userSmoking: doc[USER_SMOKING] ?? '',
+      userDrinking: doc[USER_DRINKING] ?? '',
+      userSleepSchedule: doc[USER_SLEEP_SCHEDULE] ?? '',
+      // Relationship Intent
+      userRelationshipIntent: doc[USER_RELATIONSHIP_INTENT] ?? '',
     );
   }
 }

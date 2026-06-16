@@ -317,6 +317,36 @@ class UserModel extends Model {
     required String userSchool,
     required String userJobTitle,
     required String userBio,
+    // Academic Identity
+    required String userInstitution,
+    required String userUniversity,
+    required String userCollege,
+    required String userDegree,
+    required String userCourse,
+    required String userStudyYear,
+    required String userGraduationYear,
+    required String userAcademicStatus,
+    // Professional Identity
+    required String userOccupation,
+    required String userSpecialization,
+    required String userDepartment,
+    required String userIndustry,
+    // Future Goals
+    required List<String> userFutureGoals,
+    // Research Interests
+    required List<String> userResearchInterests,
+    // Languages
+    required String userNativeLanguage,
+    required List<String> userSpokenLanguages,
+    // Lifestyle
+    required String userWorkSchedule,
+    required String userShiftType,
+    required String userExercise,
+    required String userSmoking,
+    required String userDrinking,
+    required String userSleepSchedule,
+    // Relationship Intent
+    required String userRelationshipIntent,
     // Callback functions
     required VoidCallback onSuccess,
     required Function(String) onFail,
@@ -365,6 +395,36 @@ class UserModel extends Model {
           USER_LAST_LOGIN: FieldValue.serverTimestamp(),
           USER_REG_DATE: FieldValue.serverTimestamp(),
           USER_DEVICE_TOKEN: userDeviceToken,
+          // Academic Identity
+          USER_INSTITUTION: userInstitution,
+          USER_UNIVERSITY: userUniversity,
+          USER_COLLEGE: userCollege,
+          USER_DEGREE: userDegree,
+          USER_COURSE: userCourse,
+          USER_STUDY_YEAR: userStudyYear,
+          USER_GRADUATION_YEAR: userGraduationYear,
+          USER_ACADEMIC_STATUS: userAcademicStatus,
+          // Professional Identity
+          USER_OCCUPATION: userOccupation,
+          USER_SPECIALIZATION: userSpecialization,
+          USER_DEPARTMENT: userDepartment,
+          USER_INDUSTRY: userIndustry,
+          // Future Goals
+          USER_FUTURE_GOALS: userFutureGoals,
+          // Research Interests
+          USER_RESEARCH_INTERESTS: userResearchInterests,
+          // Languages
+          USER_NATIVE_LANGUAGE: userNativeLanguage,
+          USER_SPOKEN_LANGUAGES: userSpokenLanguages,
+          // Lifestyle
+          USER_WORK_SCHEDULE: userWorkSchedule,
+          USER_SHIFT_TYPE: userShiftType,
+          USER_EXERCISE: userExercise,
+          USER_SMOKING: userSmoking,
+          USER_DRINKING: userDrinking,
+          USER_SLEEP_SCHEDULE: userSleepSchedule,
+          // Relationship Intent
+          USER_RELATIONSHIP_INTENT: userRelationshipIntent,
           // Set User default settings
           USER_SETTINGS: {
             USER_MIN_AGE: 18, // int
@@ -405,18 +465,27 @@ class UserModel extends Model {
     required String userSchool,
     required String userJobTitle,
     required String userBio,
+    Map<String, dynamic>? extraData,
     // Callback functions
     required VoidCallback onSuccess,
     required Function(String) onFail,
   }) async {
+    // Initial data
+    final Map<String, dynamic> data = {
+      USER_SCHOOL: userSchool,
+      USER_JOB_TITLE: userJobTitle,
+      USER_BIO: userBio,
+    };
+
+    // Add extra data if not null
+    if (extraData != null) {
+      data.addAll(extraData);
+    }
+
     /// Update user profile
     updateUserData(
           userId: user.userId,
-          data: {
-            USER_SCHOOL: userSchool,
-            USER_JOB_TITLE: userJobTitle,
-            USER_BIO: userBio,
-          },
+          data: data,
         )
         .then((_) {
           isLoading = false;
