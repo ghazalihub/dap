@@ -4,6 +4,7 @@ import 'package:dating_app/api/matches_api.dart';
 import 'package:dating_app/datas/user.dart';
 import 'package:dating_app/dialogs/its_match_dialog.dart';
 import 'package:dating_app/dialogs/report_dialog.dart';
+import 'package:dating_app/helpers/compatibility_helper.dart';
 import 'package:dating_app/helpers/app_helper.dart';
 import 'package:dating_app/helpers/app_localizations.dart';
 import 'package:dating_app/models/user_model.dart';
@@ -327,6 +328,10 @@ class ProfileScreenState extends State<ProfileScreen> {
                               ],
                             ),
 
+                          /// Compatibility Section
+                          if (UserModel().user.userId != widget.user.userId)
+                            _buildCompatibilitySection(context),
+
                           /// Profile bio
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -420,6 +425,49 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   Widget _profileInfoItem(String label, String value) {
     return _ProfileInfoItemWidget(label: label, value: value);
+  }
+
+  Widget _buildCompatibilitySection(BuildContext context) {
+    final result = CompatibilityHelper.calculate(UserModel().user, widget.user);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Divider(),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Text("Compatibility: ",
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor)),
+              Text("${result.score}%",
+                  style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green)),
+            ],
+          ),
+        ),
+        if (result.explanations.isNotEmpty)
+          ...result.explanations.map((explanation) => Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                child: Row(
+                  children: [
+                    const Icon(Icons.check_circle_outline,
+                        size: 18, color: Colors.green),
+                    const SizedBox(width: 8),
+                    Expanded(
+                        child: Text(explanation,
+                            style: const TextStyle(fontSize: 16))),
+                  ],
+                ),
+              )),
+      ],
+    );
   }
 }
 

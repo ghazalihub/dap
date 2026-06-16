@@ -1,4 +1,5 @@
 import 'package:dating_app/datas/user.dart';
+import 'package:dating_app/helpers/compatibility_helper.dart';
 import 'package:dating_app/dialogs/report_dialog.dart';
 import 'package:dating_app/models/user_model.dart';
 import 'package:dating_app/plugins/swipe_stack/swipe_stack.dart';
@@ -117,7 +118,24 @@ class ProfileCard extends StatelessWidget {
                                   )
                                 ],
                               ),
-                            )
+                            ),
+                          const Spacer(),
+                          if (UserModel().user.userId != user.userId)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withAlpha(50),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                "${CompatibilityHelper.calculate(UserModel().user, user).score}% Compatible",
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
                         ],
                       ),
 

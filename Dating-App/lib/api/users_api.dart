@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/api/blocked_users_api.dart';
 import 'package:dating_app/constants/constants.dart';
+import 'package:dating_app/datas/user.dart';
+import 'package:dating_app/helpers/compatibility_helper.dart';
 import 'package:dating_app/models/user_model.dart';
 import 'package:dating_app/plugins/geoflutterfire/geoflutterfire.dart';
 import 'package:flutter/material.dart';
@@ -83,19 +85,33 @@ class UsersApi {
       debugPrint('removeBlockedUsers() -> error: $e');
     });
 
-    /// Sort by newest and ranking boost
+    /// Sort by Verification, Compatibility, and Recency
     allUsers.sort((a, b) {
-      final int boostA = (a.data() as Map<String, dynamic>).containsKey(USER_VERIFICATION_RANKING_BOOST)
-          ? a[USER_VERIFICATION_RANKING_BOOST]
-          : 0;
-      final int boostB = (b.data() as Map<String, dynamic>).containsKey(USER_VERIFICATION_RANKING_BOOST)
-          ? b[USER_VERIFICATION_RANKING_BOOST]
-          : 0;
+      // 1. Ranking Boost (Verification Type)
+      final int boostA =
+          (a.data() as Map<String, dynamic>).containsKey(USER_VERIFICATION_RANKING_BOOST)
+              ? a[USER_VERIFICATION_RANKING_BOOST]
+              : 0;
+      final int boostB =
+          (b.data() as Map<String, dynamic>).containsKey(USER_VERIFICATION_RANKING_BOOST)
+              ? b[USER_VERIFICATION_RANKING_BOOST]
+              : 0;
 
       if (boostA != boostB) {
-        return boostB.compareTo(boostA); // Higher boost first
+        return boostB.compareTo(boostA);
       }
 
+      // 2. Compatibility Score
+      final User userA = User.fromDocument(a.data()!);
+      final User userB = User.fromDocument(b.data()!);
+      final int scoreA = CompatibilityHelper.calculate(UserModel().user, userA).score;
+      final int scoreB = CompatibilityHelper.calculate(UserModel().user, userB).score;
+
+      if (scoreA != scoreB) {
+        return scoreB.compareTo(scoreA);
+      }
+
+      // 3. Recency
       final DateTime userRegDateA = a[USER_REG_DATE].toDate();
       final DateTime userRegDateB = b[USER_REG_DATE].toDate();
       return userRegDateA.compareTo(userRegDateB);
