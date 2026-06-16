@@ -34,12 +34,16 @@ class DiscoverTabState extends State<DiscoverTab> {
   final VisitsApi _visitsApi = VisitsApi();
   final UsersApi _usersApi = UsersApi();
   List<DocumentSnapshot<Map<String, dynamic>>>? _users;
+  DiscoveryMode _currentMode = DiscoveryMode.general;
   late AppLocalizations _i18n;
 
   /// Get all Users
   Future<void> _loadUsers(
       List<DocumentSnapshot<Map<String, dynamic>>> dislikedUsers) async {
-    _usersApi.getUsers(dislikedUsers: dislikedUsers).then((users) {
+    setState(() => _users = null); // Show loading
+    _usersApi
+        .getUsers(dislikedUsers: dislikedUsers, discoveryMode: _currentMode)
+        .then((users) {
       // Check result
       if (users.isNotEmpty) {
         if (mounted) {
@@ -79,6 +83,70 @@ class DiscoverTabState extends State<DiscoverTab> {
   }
 
   Widget _showUsers() {
+    return Column(
+      children: [
+        _buildModeSelector(),
+        Expanded(
+          child: _buildDiscoveryContent(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildModeSelector() {
+    return Container(
+      height: 50,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        children: DiscoveryMode.values.map((mode) {
+          final isSelected = _currentMode == mode;
+          return Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: ChoiceChip(
+              label: Text(_getModeLabel(mode)),
+              selected: isSelected,
+              onSelected: (selected) {
+                if (selected) {
+                  setState(() => _currentMode = mode);
+                  _dislikesApi.getDislikedUsers(withLimit: false).then((list) {
+                    _loadUsers(list);
+                  });
+                }
+              },
+              selectedColor: Theme.of(context).primaryColor,
+              labelStyle: TextStyle(
+                color: isSelected ? Colors.white : Colors.black,
+                fontSize: 12,
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  String _getModeLabel(DiscoveryMode mode) {
+    switch (mode) {
+      case DiscoveryMode.general:
+        return "General";
+      case DiscoveryMode.academic:
+        return "Academic";
+      case DiscoveryMode.sameInstitution:
+        return "Same Institution";
+      case DiscoveryMode.sameProfession:
+        return "Same Profession";
+      case DiscoveryMode.similarGoals:
+        return "Similar Goals";
+      case DiscoveryMode.highlyCompatible:
+        return "Compatible";
+      case DiscoveryMode.seriousRelationships:
+        return "Serious";
+    }
+  }
+
+  Widget _buildDiscoveryContent() {
     /// Check result
     if (_users == null) {
       return Processing(text: _i18n.translate("loading"));

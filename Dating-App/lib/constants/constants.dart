@@ -134,6 +134,17 @@ const String USER_VERIFICATION_ID_NUMBER = "user_verification_id_number";
 const String USER_VERIFICATION_DOCUMENT_URL = "user_verification_document_url";
 const String USER_VERIFICATION_RANKING_BOOST = "user_verification_ranking_boost";
 
+// Discovery Modes
+enum DiscoveryMode {
+  general,
+  academic,
+  sameInstitution,
+  sameProfession,
+  similarGoals,
+  highlyCompatible,
+  seriousRelationships
+}
+
 // User Setting map - fields
 const String USER_MIN_AGE = "user_min_age";
 const String USER_MAX_AGE = "user_max_age";

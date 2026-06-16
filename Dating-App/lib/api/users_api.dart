@@ -15,6 +15,7 @@ class UsersApi {
   /// Get all users
   Future<List<DocumentSnapshot<Map<String, dynamic>>>> getUsers({
     required List<DocumentSnapshot<Map<String, dynamic>>> dislikedUsers,
+    DiscoveryMode discoveryMode = DiscoveryMode.general,
   }) async {
     /// Build Users query
     Query<Map<String, dynamic>> usersQuery = _firestore
@@ -120,16 +121,44 @@ class UsersApi {
     final int minAge = settings[USER_MIN_AGE];
     final int maxAge = settings[USER_MAX_AGE];
 
-    // Filter Profile Ages
-    return allUsers.where((DocumentSnapshot<Map<String, dynamic>> user) {
-      // Get User Birthday
-      final DateTime userBirthday = DateTime(
-          user[USER_BIRTH_YEAR], user[USER_BIRTH_MONTH], user[USER_BIRTH_DAY]);
+    // Filter Profile Ages and Discovery Mode
+    return allUsers.where((DocumentSnapshot<Map<String, dynamic>> userDoc) {
+      final User otherUser = User.fromDocument(userDoc.data()!);
+      final User currentUser = UserModel().user;
 
-      /// Get user profile age to filter
+      // 1. Age Filter
+      final DateTime userBirthday = DateTime(otherUser.userBirthYear,
+          otherUser.userBirthMonth, otherUser.userBirthDay);
       final int profileAge = UserModel().calculateUserAge(userBirthday);
-      // Return result
-      return profileAge >= minAge && profileAge <= maxAge;
+      if (profileAge < minAge || profileAge > maxAge) return false;
+
+      // 2. Discovery Mode Filter
+      switch (discoveryMode) {
+        case DiscoveryMode.general:
+          return true;
+        case DiscoveryMode.academic:
+          return otherUser.userDegree.isNotEmpty ||
+              otherUser.userAcademicStatus.isNotEmpty;
+        case DiscoveryMode.sameInstitution:
+          return (otherUser.userInstitution.isNotEmpty &&
+                  otherUser.userInstitution == currentUser.userInstitution) ||
+              (otherUser.userUniversity.isNotEmpty &&
+                  otherUser.userUniversity == currentUser.userUniversity);
+        case DiscoveryMode.sameProfession:
+          return (otherUser.userIndustry.isNotEmpty &&
+                  otherUser.userIndustry == currentUser.userIndustry) ||
+              (otherUser.userOccupation.isNotEmpty &&
+                  otherUser.userOccupation == currentUser.userOccupation);
+        case DiscoveryMode.similarGoals:
+          return otherUser.userFutureGoals
+              .any((goal) => currentUser.userFutureGoals.contains(goal));
+        case DiscoveryMode.highlyCompatible:
+          return CompatibilityHelper.calculate(currentUser, otherUser).score >=
+              75;
+        case DiscoveryMode.seriousRelationships:
+          return otherUser.userRelationshipIntent == 'Marriage' ||
+              otherUser.userRelationshipIntent == 'Long-Term Relationship';
+      }
     }).toList();
   }
 }
