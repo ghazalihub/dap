@@ -98,6 +98,26 @@ class ProfileCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
+                          if (user.userIsVerified)
+                            Tooltip(
+                              message: user.userVerificationType == 'Student'
+                                  ? "Verified Student"
+                                  : "Verified Professional",
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Image.asset('assets/images/verified_badge.png',
+                                      width: 25, height: 25),
+                                  Icon(
+                                    user.userVerificationType == 'Student'
+                                        ? Icons.school
+                                        : Icons.work,
+                                    size: 10,
+                                    color: Colors.white,
+                                  )
+                                ],
+                              ),
+                            )
                         ],
                       ),
 

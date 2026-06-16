@@ -127,6 +127,12 @@ const String USER_DRINKING = "user_drinking";
 const String USER_SLEEP_SCHEDULE = "user_sleep_schedule";
 // Relationship Intent
 const String USER_RELATIONSHIP_INTENT = "user_relationship_intent";
+// Verification fields
+const String USER_VERIFICATION_STATUS = "user_verification_status"; // pending, verified, rejected, unverified
+const String USER_VERIFICATION_TYPE = "user_verification_type"; // student, professional, institution
+const String USER_VERIFICATION_ID_NUMBER = "user_verification_id_number";
+const String USER_VERIFICATION_DOCUMENT_URL = "user_verification_document_url";
+const String USER_VERIFICATION_RANKING_BOOST = "user_verification_ranking_boost";
 
 // User Setting map - fields
 const String USER_MIN_AGE = "user_min_age";

@@ -57,6 +57,12 @@ class User {
   final String userSleepSchedule;
   // Relationship Intent
   final String userRelationshipIntent;
+  // Verification
+  final String userVerificationStatus;
+  final String userVerificationType;
+  final String userVerificationIdNumber;
+  final String userVerificationDocumentUrl;
+  final int userVerificationRankingBoost;
 
   final Map<String, dynamic>? userGallery;
   final Map<String, dynamic>? userSettings;
@@ -119,6 +125,12 @@ class User {
     required this.userSleepSchedule,
     // Relationship Intent
     required this.userRelationshipIntent,
+    // Verification
+    required this.userVerificationStatus,
+    required this.userVerificationType,
+    required this.userVerificationIdNumber,
+    required this.userVerificationDocumentUrl,
+    required this.userVerificationRankingBoost,
   });
 
   /// factory user object
@@ -181,6 +193,12 @@ class User {
       userSleepSchedule: doc[USER_SLEEP_SCHEDULE] ?? '',
       // Relationship Intent
       userRelationshipIntent: doc[USER_RELATIONSHIP_INTENT] ?? '',
+      // Verification
+      userVerificationStatus: doc[USER_VERIFICATION_STATUS] ?? 'unverified',
+      userVerificationType: doc[USER_VERIFICATION_TYPE] ?? '',
+      userVerificationIdNumber: doc[USER_VERIFICATION_ID_NUMBER] ?? '',
+      userVerificationDocumentUrl: doc[USER_VERIFICATION_DOCUMENT_URL] ?? '',
+      userVerificationRankingBoost: doc[USER_VERIFICATION_RANKING_BOOST] ?? 0,
     );
   }
 }

@@ -23,6 +23,9 @@ class UsersApi {
     // Filter the User Gender
     usersQuery = UserModel().filterUserGender(usersQuery);
 
+    // ONLY SHOW VERIFIED USERS
+    usersQuery = usersQuery.where(USER_VERIFICATION_STATUS, isEqualTo: 'verified');
+
     // Instance of Geoflutterfire
     final Geoflutterfire geo = Geoflutterfire();
 
@@ -80,8 +83,19 @@ class UsersApi {
       debugPrint('removeBlockedUsers() -> error: $e');
     });
 
-    /// Sort by newest
+    /// Sort by newest and ranking boost
     allUsers.sort((a, b) {
+      final int boostA = (a.data() as Map<String, dynamic>).containsKey(USER_VERIFICATION_RANKING_BOOST)
+          ? a[USER_VERIFICATION_RANKING_BOOST]
+          : 0;
+      final int boostB = (b.data() as Map<String, dynamic>).containsKey(USER_VERIFICATION_RANKING_BOOST)
+          ? b[USER_VERIFICATION_RANKING_BOOST]
+          : 0;
+
+      if (boostA != boostB) {
+        return boostB.compareTo(boostA); // Higher boost first
+      }
+
       final DateTime userRegDateA = a[USER_REG_DATE].toDate();
       final DateTime userRegDateB = b[USER_REG_DATE].toDate();
       return userRegDateA.compareTo(userRegDateB);

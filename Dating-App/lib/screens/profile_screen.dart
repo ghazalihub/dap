@@ -118,10 +118,30 @@ class ProfileScreenState extends State<ProfileScreen> {
                               widget.user.userIsVerified
                                   ? Container(
                                       margin: const EdgeInsets.only(right: 5),
-                                      child: Image.asset(
-                                          'assets/images/verified_badge.png',
-                                          width: 30,
-                                          height: 30))
+                                      child: Tooltip(
+                                        message: widget.user
+                                                    .userVerificationType ==
+                                                'Student'
+                                            ? "Verified Student"
+                                            : "Verified Professional",
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            Image.asset(
+                                                'assets/images/verified_badge.png',
+                                                width: 35,
+                                                height: 35),
+                                            Icon(
+                                              widget.user.userVerificationType ==
+                                                      'Student'
+                                                  ? Icons.school
+                                                  : Icons.work,
+                                              size: 15,
+                                              color: Colors.white,
+                                            )
+                                          ],
+                                        ),
+                                      ))
                                   : const SizedBox(width: 0, height: 0),
 
                               /// Show VIP badge for current user

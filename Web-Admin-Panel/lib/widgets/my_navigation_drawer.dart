@@ -7,6 +7,7 @@ import 'package:dating_app_dashboard/screens/in_app_purchases.dart';
 import 'package:dating_app_dashboard/screens/push_notifications.dart';
 import 'package:dating_app_dashboard/screens/sign_in_screen.dart';
 import 'package:dating_app_dashboard/screens/users_screen.dart';
+import 'package:dating_app_dashboard/screens/verification_queue_screen.dart';
 import 'package:dating_app_dashboard/widgets/app_logo.dart';
 import 'package:flutter/material.dart';
 
@@ -55,6 +56,16 @@ class _NavigationDrawerState extends State<MyNavigationDrawer> {
               // Go to users screen
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const UsersScreen()));
+            },
+          ),
+          const Divider(height: 0),
+          ListTile(
+            leading: const Icon(Icons.verified_user_outlined),
+            title: Text("Verification Queue", style: _menuTextStyle),
+            onTap: () {
+              // Go to verification queue screen
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const VerificationQueueScreen()));
             },
           ),
           const Divider(height: 0),
