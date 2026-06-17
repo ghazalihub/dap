@@ -440,8 +440,8 @@ class ChatScreenState extends State<ChatScreen> {
                   break;
 
                 case "restrict":
+                  BlockedUsersApi().restrictUser(blockedUserId: widget.user.userId);
                   showScaffoldMessage(
-                      context: context,
                       message: "Interactions with this user restricted.");
                   break;
 
