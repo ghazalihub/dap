@@ -9,6 +9,7 @@ import 'package:dating_app_dashboard/screens/sign_in_screen.dart';
 import 'package:dating_app_dashboard/screens/users_screen.dart';
 import 'package:dating_app_dashboard/screens/verification_queue_screen.dart';
 import 'package:dating_app_dashboard/screens/moderation_center_screen.dart';
+import 'package:dating_app_dashboard/screens/communities_management.dart';
 import 'package:dating_app_dashboard/widgets/app_logo.dart';
 import 'package:flutter/material.dart';
 
@@ -57,6 +58,16 @@ class _NavigationDrawerState extends State<MyNavigationDrawer> {
               // Go to users screen
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const UsersScreen()));
+            },
+          ),
+          const Divider(height: 0),
+          ListTile(
+            leading: const Icon(Icons.account_balance_outlined),
+            title: Text("Communities", style: _menuTextStyle),
+            onTap: () {
+              // Go to communities management screen
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const CommunitiesManagementScreen()));
             },
           ),
           const Divider(height: 0),

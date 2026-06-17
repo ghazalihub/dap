@@ -107,6 +107,7 @@ const String USER_BAN_REASON = "user_ban_reason";
 
 // Collections
 const String C_REPORTS = "Reports";
+const String C_COMMUNITIES = "Communities";
 
 // User Setting map - fields
 const String USER_MIN_AGE = "user_min_age";

@@ -8,6 +8,7 @@ import 'package:dating_app/api/messages_api.dart';
 import 'package:dating_app/api/notifications_api.dart';
 import 'package:dating_app/constants/constants.dart';
 import 'package:dating_app/datas/user.dart';
+import 'package:dating_app/helpers/chat_quality_helper.dart';
 import 'package:dating_app/dialogs/common_dialogs.dart';
 import 'package:dating_app/dialogs/progress_dialog.dart';
 import 'package:dating_app/helpers/app_localizations.dart';
@@ -366,6 +367,16 @@ class ChatScreenState extends State<ChatScreen> {
                     ],
                   ),
                 ),
+              const PopupMenuItem(
+                value: "restrict",
+                child: Row(
+                  children: [
+                    Icon(Icons.visibility_off, color: Colors.grey),
+                    SizedBox(width: 5),
+                    Text("Restrict Interactions"),
+                  ],
+                ),
+              ),
             ],
             onSelected: (val) {
               /// Control selected value
@@ -426,6 +437,12 @@ class ChatScreenState extends State<ChatScreen> {
                       Future(() => Navigator.of(context).pop());
                     },
                   );
+                  break;
+
+                case "restrict":
+                  showScaffoldMessage(
+                      context: context,
+                      message: "Interactions with this user restricted.");
                   break;
 
                 // Handle Block/Unblock profile
@@ -523,6 +540,9 @@ class ChatScreenState extends State<ChatScreen> {
         // Check data
         if (!snapshot.hasData) {
           return const MyCircularProgress();
+        } else if (snapshot.data!.docs.isEmpty) {
+          // No messages yet, show starters
+          return _buildStarters();
         } else {
           return ListView.builder(
             controller: _messagesController,
@@ -566,6 +586,61 @@ class ChatScreenState extends State<ChatScreen> {
           );
         }
       },
+    );
+  }
+
+  Widget _buildStarters() {
+    final starters = ChatQualityHelper.getConversationStarters(widget.user);
+    final iceBreakers = ChatQualityHelper.getIceBreakers();
+
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            const Icon(Icons.forum_outlined, size: 80, color: Colors.grey),
+            const SizedBox(height: 10),
+            const Text("Start a meaningful conversation",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 20),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text("Suggested based on their profile:",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            const SizedBox(height: 10),
+            ...starters.map((s) => _starterChip(s)),
+            const SizedBox(height: 20),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text("Academic Ice Breakers:",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            const SizedBox(height: 10),
+            ...iceBreakers.map((i) => _starterChip(i)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _starterChip(String text) {
+    return GestureDetector(
+      onTap: () {
+        _textController.text = text;
+        setState(() => _isComposing = true);
+      },
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Theme.of(context).primaryColor),
+        ),
+        child: Text(text, style: TextStyle(color: Theme.of(context).primaryColor)),
+      ),
     );
   }
 }

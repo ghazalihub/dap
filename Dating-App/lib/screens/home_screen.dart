@@ -8,6 +8,7 @@ import 'package:dating_app/helpers/app_helper.dart';
 import 'package:dating_app/helpers/app_localizations.dart';
 import 'package:dating_app/helpers/app_notifications.dart';
 import 'package:dating_app/models/user_model.dart';
+import 'package:dating_app/screens/communities_screen.dart';
 import 'package:dating_app/screens/notifications_screen.dart';
 import 'package:dating_app/tabs/conversations_tab.dart';
 import 'package:dating_app/tabs/discover_tab.dart';
@@ -45,6 +46,7 @@ class HomeScreenState extends State<HomeScreen> {
     List<Widget> options = <Widget>[
       const DiscoverTab(),
       const MatchesTab(),
+      const CommunitiesScreen(),
       const ConversationsTab(),
       const ProfileTab()
     ];
@@ -296,6 +298,16 @@ class HomeScreenState extends State<HomeScreen> {
                       : null),
               label: _i18n.translate("matches")),
 
+          /// Communities Tab
+          BottomNavigationBarItem(
+              icon: SvgIcon("assets/icons/university_icon.svg",
+                  width: 27,
+                  height: 27,
+                  color: _selectedIndex == 2
+                      ? Theme.of(context).primaryColor
+                      : null),
+              label: "Community"),
+
           /// Conversations Tab
           BottomNavigationBarItem(
               icon: _getConversationCounter(), label: _i18n.translate("chats")),
@@ -344,12 +356,12 @@ class HomeScreenState extends State<HomeScreen> {
   Widget _getConversationCounter() {
     // Set icon
     final icon = SvgIcon(
-        _selectedIndex == 2
+        _selectedIndex == 3
             ? "assets/icons/message_2_icon.svg"
             : "assets/icons/message_icon.svg",
         width: 30,
         height: 30,
-        color: _selectedIndex == 2 ? Theme.of(context).primaryColor : null);
+        color: _selectedIndex == 3 ? Theme.of(context).primaryColor : null);
 
     /// Handle stream
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(

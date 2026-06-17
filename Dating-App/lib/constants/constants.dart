@@ -142,6 +142,7 @@ const String USER_BAN_REASON = "user_ban_reason";
 
 // Collections
 const String C_REPORTS = "Reports";
+const String C_COMMUNITIES = "Communities";
 
 // Discovery Modes
 enum DiscoveryMode {
