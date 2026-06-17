@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app_dashboard/constants/constants.dart';
 import 'package:dating_app_dashboard/models/app_model.dart';
+import 'package:dating_app_dashboard/screens/analytics_dashboard.dart';
+import 'package:dating_app_dashboard/screens/communities_management.dart';
+import 'package:dating_app_dashboard/screens/moderation_center_screen.dart';
+import 'package:dating_app_dashboard/screens/verification_queue_screen.dart';
 import 'package:dating_app_dashboard/widgets/my_navigation_drawer.dart';
 import 'package:dating_app_dashboard/widgets/processing.dart';
 import 'package:dating_app_dashboard/widgets/users_pie_chart.dart';
@@ -36,7 +40,6 @@ class _DashboardState extends State<Dashboard> {
     _users!.listen((usersEvent) {
       // Update users
       AppModel().updateUsers(usersEvent.docs);
-      //AppModel().creteFakeUsers(usersEvent.docs[0].data());r
     });
   }
 
@@ -85,7 +88,6 @@ class _DashboardState extends State<Dashboard> {
                 // Variables
                 final List<DocumentSnapshot<Map<String, dynamic>>> users =
                     snapshot.data!.docs;
-                // G
                 final int totalActiveUsers = _countUsers(users, 'active');
                 final int totalVerifiedUsers = _countUsers(users, 'verified');
                 final int totalFlaggedUsers = _countUsers(users, 'flagged');
@@ -108,7 +110,7 @@ class _DashboardState extends State<Dashboard> {
                                   style: TextStyle(
                                       fontSize: 25,
                                       fontWeight: FontWeight.bold)),
-                               Text("Watch your bussiness growing in real time!",
+                               Text("Academic Community Operations Center",
                                   style: TextStyle(color: Colors.grey)),
                             ],
                           ),
@@ -120,31 +122,24 @@ class _DashboardState extends State<Dashboard> {
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: [
-                            // Total Users
                             StatisticCard(
                               iconBgColor: Colors.green,
                               icon: Icons.person_add_outlined,
                               total: totalActiveUsers,
                               description: "Total Active Users",
                             ),
-
-                            // Total Verified Users
                             StatisticCard(
                               iconBgColor: Colors.blue,
                               icon: Icons.check,
                               total: totalVerifiedUsers,
                               description: "Total Verified Users",
                             ),
-
-                            // Total Flagged Users
                             StatisticCard(
                               iconBgColor: Colors.amber,
                               icon: Icons.flag_outlined,
                               total: totalFlaggedUsers,
                               description: "Total Flagged Users",
                             ),
-
-                            // Total Blocked Users
                             StatisticCard(
                               iconBgColor: Colors.red,
                               icon: Icons.lock_outlined,
@@ -163,10 +158,69 @@ class _DashboardState extends State<Dashboard> {
                         totalFlaggedUsers: totalFlaggedUsers,
                         totalBlockedUsers: totalBlockedUsers,
                       ),
+                      const SizedBox(height: 20),
+                      _buildQuickLinks(context),
                     ],
                   ),
                 );
               }
             }));
+  }
+
+  Widget _buildQuickLinks(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Operations Shortcuts",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 15,
+            runSpacing: 15,
+            children: [
+              _quickLinkCard(context, "Verify Users", Icons.verified_user,
+                  Colors.blue, const VerificationQueueScreen()),
+              _quickLinkCard(context, "Moderation", Icons.security, Colors.red,
+                  const ModerationCenterScreen()),
+              _quickLinkCard(context, "Analytics", Icons.analytics,
+                  Colors.green, const AnalyticsDashboard()),
+              _quickLinkCard(context, "Communities", Icons.group, Colors.orange,
+                  const CommunitiesManagementScreen()),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _quickLinkCard(BuildContext context, String title, IconData icon,
+      Color color, Widget screen) {
+    return InkWell(
+      onTap: () =>
+          Navigator.push(context, MaterialPageRoute(builder: (context) => screen)),
+      child: Container(
+        width: 150,
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey.withAlpha(50),
+                blurRadius: 5,
+                offset: const Offset(0, 2))
+          ],
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 30),
+            const SizedBox(height: 8),
+            Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+          ],
+        ),
+      ),
+    );
   }
 }

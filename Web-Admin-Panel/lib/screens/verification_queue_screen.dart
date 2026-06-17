@@ -57,6 +57,10 @@ class VerificationQueueScreen extends StatelessWidget {
                           onPressed: () => _reject(context, user.id),
                           child: const Text("REJECT", style: TextStyle(color: Colors.red)),
                         ),
+                        TextButton(
+                          onPressed: () => _approveByRep(context, user.id),
+                          child: const Text("REP APPROVE", style: TextStyle(color: Colors.orange)),
+                        ),
                         ElevatedButton(
                           onPressed: () => _approve(context, user.id),
                           child: const Text("APPROVE"),
@@ -79,7 +83,7 @@ class VerificationQueueScreen extends StatelessWidget {
     await FirebaseFirestore.instance.collection(C_USERS).doc(userId).update({
       USER_VERIFICATION_STATUS: 'verified',
       USER_IS_VERIFIED: true,
-      USER_VERIFICATION_RANKING_BOOST: 10,
+      USER_VERIFICATION_RANKING_BOOST: 15, // Higher boost for manual approval
     });
     showScaffoldMessage(
         context: context,
@@ -87,14 +91,48 @@ class VerificationQueueScreen extends StatelessWidget {
         message: "User verified successfully");
   }
 
-  void _reject(BuildContext context, String userId) async {
+  void _approveByRep(BuildContext context, String userId) async {
     await FirebaseFirestore.instance.collection(C_USERS).doc(userId).update({
-      USER_VERIFICATION_STATUS: 'rejected',
-      USER_IS_VERIFIED: false,
+      USER_VERIFICATION_STATUS: 'verified',
+      USER_IS_VERIFIED: true,
+      USER_VERIFICATION_RANKING_BOOST: 20, // Highest boost for rep approval
+      'verified_by_rep': true,
     });
     showScaffoldMessage(
         context: context,
         scaffoldkey: _scaffoldKey,
-        message: "Verification rejected");
+        message: "User verified by Representative successfully");
+  }
+
+  void _reject(BuildContext context, String userId) async {
+    final reasonController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Rejection Reason"),
+        content: TextField(
+          controller: reasonController,
+          decoration: const InputDecoration(hintText: "Enter reason for rejection"),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text("CANCEL")),
+          ElevatedButton(
+            onPressed: () async {
+              await FirebaseFirestore.instance.collection(C_USERS).doc(userId).update({
+                USER_VERIFICATION_STATUS: 'rejected',
+                USER_IS_VERIFIED: false,
+                'verification_rejection_reason': reasonController.text.trim(),
+              });
+              Navigator.pop(context);
+              showScaffoldMessage(
+                  context: context,
+                  scaffoldkey: _scaffoldKey,
+                  message: "Verification rejected");
+            },
+            child: const Text("REJECT"),
+          )
+        ],
+      ),
+    );
   }
 }
