@@ -6,6 +6,10 @@ import Discover from './pages/Discover';
 import Chat from './pages/Chat';
 import Community from './pages/Community';
 import Premium from './pages/Premium';
+import Profile from './pages/Profile';
+import Conversations from './pages/Conversations';
+import BlockedAccount from './pages/BlockedAccount';
+import Notifications from './pages/Notifications';
 import { auth, db } from './api/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -36,6 +40,10 @@ const App = () => {
 
   if (loading) return null;
 
+  if (user && user.userStatus !== 'active') {
+    return <BlockedAccount user={user} />;
+  }
+
   return (
     <Router>
       <div className="min-h-screen bg-gray-50 pb-16 overflow-x-hidden">
@@ -47,6 +55,9 @@ const App = () => {
             <Route path="/chat/:userId" element={user ? <PageWrapper><Chat /></PageWrapper> : <Navigate to="/signin" />} />
             <Route path="/community" element={user ? <PageWrapper><Community /></PageWrapper> : <Navigate to="/signin" />} />
             <Route path="/premium" element={user ? <PageWrapper><Premium /></PageWrapper> : <Navigate to="/signin" />} />
+            <Route path="/profile" element={user ? <PageWrapper><Profile /></PageWrapper> : <Navigate to="/signin" />} />
+            <Route path="/conversations" element={user ? <PageWrapper><Conversations /></PageWrapper> : <Navigate to="/signin" />} />
+            <Route path="/notifications" element={user ? <PageWrapper><Notifications /></PageWrapper> : <Navigate to="/signin" />} />
             <Route path="/" element={<Navigate to="/discover" />} />
           </Routes>
         </AnimatePresence>
@@ -62,9 +73,9 @@ const App = () => {
             >
               <BottomNavigationAction label="Discover" value="discover" icon={<Search />} />
               <BottomNavigationAction label="Community" value="community" icon={<People />} />
-              <BottomNavigationAction label="Chat" value="chat" icon={<ChatBubble />} />
+              <BottomNavigationAction label="Chat" value="conversations" icon={<ChatBubble />} />
               <BottomNavigationAction label="Premium" value="premium" icon={<Star />} />
-              <BottomNavigationAction label="Profile" value="onboarding" icon={<Person />} />
+              <BottomNavigationAction label="Profile" value="profile" icon={<Person />} />
             </BottomNavigation>
           </Paper>
         )}
