@@ -2,6 +2,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-ro
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import VerificationQueue from './pages/VerificationQueue';
 import ModerationCenter from './pages/ModerationCenter';
+import PushNotifications from './pages/PushNotifications';
+import AppSettings from './pages/AppSettings';
+import UsersScreen from './pages/UsersScreen';
 import {
   Drawer, List, ListItem, ListItemIcon, ListItemText,
   Box, Typography, ListItemButton
@@ -42,6 +45,12 @@ const App = () => {
                     <ListItemText primary="Verification" />
                   </ListItemButton>
                 </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton component={Link} to="/notifications">
+                    <ListItemIcon><Dashboard /></ListItemIcon>
+                    <ListItemText primary="Broadcast" />
+                  </ListItemButton>
+                </ListItem>
              </List>
 
              <Typography variant="caption" className="text-gray-400 uppercase font-bold text-[10px] mt-4 block">Trust & Safety</Typography>
@@ -63,7 +72,7 @@ const App = () => {
              <Typography variant="caption" className="text-gray-400 uppercase font-bold text-[10px] mt-4 block">System</Typography>
              <List>
                 <ListItem disablePadding>
-                  <ListItemButton>
+                  <ListItemButton component={Link} to="/settings">
                     <ListItemIcon><Settings /></ListItemIcon>
                     <ListItemText primary="Settings" />
                   </ListItemButton>
@@ -77,6 +86,9 @@ const App = () => {
             <Route path="/dashboard" element={<AnalyticsDashboard />} />
             <Route path="/verification" element={<VerificationQueue />} />
             <Route path="/moderation" element={<ModerationCenter />} />
+            <Route path="/notifications" element={<PushNotifications />} />
+            <Route path="/settings" element={<AppSettings />} />
+            <Route path="/users" element={<UsersScreen />} />
             <Route path="/" element={<Navigate to="/dashboard" />} />
           </Routes>
         </main>

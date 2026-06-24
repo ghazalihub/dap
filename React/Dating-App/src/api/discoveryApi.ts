@@ -1,52 +1,55 @@
-import { collection, query, where, getDocs, limit } from 'firebase/firestore';
+import { collection, query, where, getDocs, limit, startAt, endAt, orderBy } from 'firebase/firestore';
 import { db } from '../api/firebase';
 import { CompatibilityHelper } from '../utils/compatibilityHelper';
 import type { User } from '../types/user';
+import * as geofire from 'geofire-common';
 
-export const fetchDiscoveryUsers = async (currentUser: User, mode: string = 'standard') => {
+export const fetchDiscoveryUsers = async (currentUser: User, mode: string = 'standard', radiusKm: number = 50) => {
   const usersRef = collection(db, 'users');
-  let q;
 
-  // Basic filters: Opposite gender, Active status
   const oppositeGender = currentUser.userGender === 'Male' ? 'Female' : 'Male';
+  const center = [currentUser.userLocation?.latitude || 0, currentUser.userLocation?.longitude || 0] as geofire.Geopoint;
 
-  // Note: Firestore doesn't support complex in-memory ranking natively.
-  // We fetch a batch and then apply our tiered ranking logic.
-  q = query(
-    usersRef,
-    where('userGender', '==', oppositeGender),
-    where('userStatus', '==', 'active'),
-    limit(100)
-  );
+  // Real Geo-query using geohash bounds
+  const bounds = geofire.geohashQueryBounds(center, radiusKm * 1000);
+  const promises = [];
+  for (const b of bounds) {
+    const q = query(
+      usersRef,
+      orderBy('geohash'),
+      startAt(b[0]),
+      endAt(b[1]),
+      limit(50)
+    );
+    promises.push(getDocs(q));
+  }
 
-  const snapshot = await getDocs(q);
-  let users = snapshot.docs
-    .map(doc => doc.data() as User)
-    .filter(u => u.userId !== currentUser.userId);
+  const snapshots = await Promise.all(promises);
+  let users: User[] = [];
 
-  // Apply Discovery Modes
+  snapshots.forEach(snap => {
+    snap.docs.forEach(doc => {
+      const u = doc.data() as User;
+      if (u.userId !== currentUser.userId && u.userGender === oppositeGender && u.userStatus === 'active') {
+         users.push(u);
+      }
+    });
+  });
+
+  // Apply Discovery Modes and Ranking
   if (mode === 'same_institution') {
     users = users.filter(u => u.userInstitution === currentUser.userInstitution);
   } else if (mode === 'same_profession') {
     users = users.filter(u => u.userIndustry === currentUser.userIndustry);
   }
 
-  // Tiered Ranking Logic:
-  // 1. Verification Status (Primary)
-  // 2. Compatibility Score (Secondary)
-  // 3. Profile Quality Score (Tertiary)
-  // 4. Recency (Quaternary)
-
   const rankedUsers = users.map(u => {
     const compatibility = CompatibilityHelper.calculate(currentUser, u);
-
-    // Calculate Rank Score
     let rankScore = 0;
     if (u.userIsVerified) rankScore += 1000;
     if (u.verificationTier === 'representative') rankScore += 500;
     rankScore += compatibility.score;
     rankScore += (u.profileQualityScore || 0) / 10;
-
     return { ...u, compatibility, rankScore };
   });
 

@@ -2,18 +2,26 @@ import { useState, useEffect } from 'react';
 import { fetchDiscoveryUsers } from '../api/discoveryApi';
 import type { User } from '../types/user';
 import {
-  Card, CardContent, Typography, CardMedia, Button,
-  Box, Chip, Tabs, Tab, CircularProgress
+  Typography, IconButton,
+  Box, Chip, Tabs, Tab, CircularProgress, Paper
 } from '@mui/material';
-import { CheckCircle, School, Work, Star } from '@mui/icons-material';
+import {
+  CheckCircle, School, Work, Star,
+  Close, Favorite, FlashOn
+} from '@mui/icons-material';
 import { auth, db } from '../api/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { LikesApi, DislikesApi } from '../api/socialApi';
+import { MatchDialog } from '../components/MatchDialog';
 
 const Discover = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState('standard');
+  const [showMatch, setShowMatch] = useState(false);
+  const [matchUser, setMatchUser] = useState<User | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -30,94 +38,144 @@ const Discover = () => {
     loadData();
   }, [mode]);
 
+  const handleSwipe = async (userId: string, direction: 'left' | 'right') => {
+    if (!currentUser) return;
+
+    if (direction === 'right') {
+       const isMatch = await LikesApi.likeUser(currentUser.userId, userId);
+       if (isMatch) {
+          const mUser = users.find(u => u.userId === userId);
+          setMatchUser(mUser);
+          setShowMatch(true);
+       }
+    } else {
+       await DislikesApi.dislikeUser(currentUser.userId, userId);
+    }
+    setUsers(prev => prev.filter(u => u.userId !== userId));
+  };
+
   if (loading) return <Box className="flex justify-center p-10"><CircularProgress /></Box>;
   if (!currentUser) return <Typography>Please sign in</Typography>;
 
   return (
-    <div className="max-w-xl mx-auto p-4 space-y-4 pb-20">
-      <Typography variant="h5" className="font-bold text-primary">Discover</Typography>
+    <div className="max-w-xl mx-auto p-4 flex flex-col h-[calc(100vh-80px)]">
+      <header className="flex justify-between items-center mb-4">
+         <Typography variant="h5" className="font-black text-primary italic">CONNECT</Typography>
+         <IconButton className="bg-primary/10 text-primary"><FlashOn fontSize="small" /></IconButton>
+      </header>
 
       <Tabs
         value={mode}
         onChange={(_, v) => setMode(v)}
         variant="scrollable"
         scrollButtons="auto"
-        className="mb-4"
+        className="mb-6"
       >
-        <Tab label="All" value="standard" />
-        <Tab label="Same Institution" value="same_institution" />
-        <Tab label="Same Profession" value="same_profession" />
-        <Tab label="Highly Compatible" value="compatible" />
+        <Tab label="Discover" value="standard" />
+        <Tab label="Institution" value="same_institution" />
+        <Tab label="Industry" value="same_profession" />
       </Tabs>
 
-      {!currentUser.userIsVerified && (
-        <Box className="bg-yellow-50 p-4 rounded-xl border border-yellow-200 mb-4">
-          <Typography variant="body2" className="text-yellow-800">
-            Verify your academic profile to unlock likes and be seen by others.
-          </Typography>
-        </Box>
-      )}
-
-      <div className="space-y-6">
-        {users.map(user => (
-          <Card key={user.userId} className="rounded-2xl shadow-lg overflow-hidden border border-gray-100">
-            <CardMedia
-              component="img"
-              height="400"
-              image={user.userProfilePhoto || 'https://via.placeholder.com/400'}
-              className="h-[400px] object-cover"
-            />
-            <CardContent className="space-y-3">
-              <Box className="flex justify-between items-start">
-                <div>
-                  <Typography variant="h6" className="font-bold flex items-center gap-1">
-                    {user.userFullname}
-                    {user.userIsVerified && <CheckCircle className="text-blue-500" fontSize="small" />}
-                  </Typography>
-                  <Typography variant="body2" className="text-gray-500">{user.userDegree} @ {user.userUniversity}</Typography>
-                </div>
-                <Box className="bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
-                  <Typography variant="caption" className="text-primary font-bold">
-                    {user.compatibility?.score}% Compatible
-                  </Typography>
-                </Box>
-              </Box>
-
-              <div className="flex flex-wrap gap-2">
-                <Chip icon={<School fontSize="small" />} label={user.userInstitution} size="small" variant="outlined" />
-                <Chip icon={<Work fontSize="small" />} label={user.userOccupation} size="small" variant="outlined" />
-              </div>
-
-              {user.compatibility?.explanations?.slice(0, 2).map((exp: string, i: number) => (
-                <Typography key={i} variant="caption" className="flex items-center gap-1 text-green-700">
-                  <Star fontSize="inherit" /> {exp}
-                </Typography>
-              ))}
-
-              <div className="flex gap-4 mt-4">
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  disabled={!currentUser.userIsVerified}
-                  className="rounded-xl py-2"
-                >
-                  Like
-                </Button>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  className="rounded-xl py-2"
-                >
-                  Pass
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-        {users.length === 0 && <Typography className="text-center py-10 text-gray-400">No matches found in this category.</Typography>}
+      <div className="relative flex-1">
+        <AnimatePresence>
+          {users.length > 0 ? (
+            users.slice(0, 2).reverse().map((user, index) => (
+              <SwipeCard
+                key={user.userId}
+                user={user}
+                isTop={index === (users.length > 1 ? 1 : 0)}
+                onSwipe={(dir) => handleSwipe(user.userId, dir)}
+              />
+            ))
+          ) : (
+            <div className="h-full flex flex-col items-center justify-center text-center p-10 opacity-40">
+               <Typography variant="h6" className="font-bold mb-2">No more scholars found</Typography>
+               <Typography variant="body2">Try expanding your radius or changing discovery modes.</Typography>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
+
+      <div className="flex justify-center gap-8 py-6">
+          <IconButton
+            onClick={() => users[0] && handleSwipe(users[0].userId, 'left')}
+            className="w-16 h-16 bg-white shadow-xl text-red-500 border border-gray-100"
+          >
+             <Close fontSize="large" />
+          </IconButton>
+          <IconButton
+            onClick={() => users[0] && handleSwipe(users[0].userId, 'right')}
+            className="w-16 h-16 bg-white shadow-xl text-green-500 border border-gray-100"
+          >
+             <Favorite fontSize="large" />
+          </IconButton>
+      </div>
+
+      {matchUser && (
+        <MatchDialog
+          open={showMatch}
+          onClose={() => setShowMatch(false)}
+          matchUser={matchUser}
+          currentUser={currentUser}
+        />
+      )}
     </div>
+  );
+};
+
+const SwipeCard = ({ user, onSwipe, isTop }: any) => {
+  const x = useMotionValue(0);
+  const rotate = useTransform(x, [-200, 200], [-25, 25]);
+  const opacity = useTransform(x, [-200, -150, 0, 150, 200], [0, 1, 1, 1, 0]);
+
+  const handleDragEnd = (_: any, info: any) => {
+    if (info.offset.x > 100) onSwipe('right');
+    else if (info.offset.x < -100) onSwipe('left');
+  };
+
+  return (
+    <motion.div
+      style={{ x, rotate, opacity, position: 'absolute', inset: 0, zIndex: isTop ? 10 : 5 }}
+      drag={isTop ? 'x' : false}
+      dragConstraints={{ left: 0, right: 0 }}
+      onDragEnd={handleDragEnd}
+      whileTap={{ scale: 0.98 }}
+      className="cursor-grab active:cursor-grabbing"
+    >
+      <Paper className="h-full rounded-[2rem] overflow-hidden shadow-2xl relative border border-gray-100">
+         <img src={user.userProfilePhoto} className="w-full h-full object-cover" />
+
+         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+
+         <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+            <Box className="flex justify-between items-end mb-2">
+               <div>
+                  <Typography variant="h4" className="font-bold flex items-center gap-2">
+                    {user.userFullname}
+                    {user.userIsVerified && <CheckCircle className="text-blue-400" />}
+                  </Typography>
+                  <Typography variant="subtitle1" className="opacity-80">{user.userDegree} @ {user.userUniversity}</Typography>
+               </div>
+               <div className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/30">
+                  <Typography variant="caption" className="font-black text-white">{user.compatibility?.score}%</Typography>
+               </div>
+            </Box>
+
+            <div className="flex flex-wrap gap-2 mb-4">
+                <Chip label={user.userInstitution} size="small" className="bg-white/10 text-white border-white/20" variant="outlined" />
+                <Chip label={user.userOccupation} size="small" className="bg-white/10 text-white border-white/20" variant="outlined" />
+            </div>
+
+            <div className="space-y-1">
+               {user.compatibility?.explanations?.slice(0, 1).map((exp: string, i: number) => (
+                  <Typography key={i} variant="caption" className="flex items-center gap-1 text-green-300 font-medium">
+                     <Star fontSize="inherit" /> {exp}
+                  </Typography>
+               ))}
+            </div>
+         </div>
+      </Paper>
+    </motion.div>
   );
 };
 
