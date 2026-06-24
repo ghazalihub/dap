@@ -1,3 +1,5 @@
+import 'package:dating_app/constants/constants.dart';
+import 'package:dating_app/datas/predefined_choices.dart';
 import 'package:dating_app/dialogs/common_dialogs.dart';
 import 'package:dating_app/dialogs/progress_dialog.dart';
 import 'package:dating_app/helpers/app_localizations.dart';
@@ -27,6 +29,45 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     text: UserModel().user.userJobTitle,
   );
   final _bioController = TextEditingController(text: UserModel().user.userBio);
+
+  // New Controllers
+  final _institutionController =
+      TextEditingController(text: UserModel().user.userInstitution);
+  final _universityController =
+      TextEditingController(text: UserModel().user.userUniversity);
+  final _collegeController =
+      TextEditingController(text: UserModel().user.userCollege);
+  final _courseController =
+      TextEditingController(text: UserModel().user.userCourse);
+  final _occupationController =
+      TextEditingController(text: UserModel().user.userOccupation);
+  final _specializationController =
+      TextEditingController(text: UserModel().user.userSpecialization);
+  final _departmentController =
+      TextEditingController(text: UserModel().user.userDepartment);
+  final _graduationYearController =
+      TextEditingController(text: UserModel().user.userGraduationYear);
+
+  String? _selectedDegree = UserModel().user.userDegree;
+  String? _selectedStudyYear = UserModel().user.userStudyYear;
+  String? _selectedAcademicStatus = UserModel().user.userAcademicStatus;
+  String? _selectedIndustry = UserModel().user.userIndustry;
+  String? _selectedRelationshipIntent = UserModel().user.userRelationshipIntent;
+  String? _selectedWorkSchedule = UserModel().user.userWorkSchedule;
+  String? _selectedShiftType = UserModel().user.userShiftType;
+  String? _selectedExercise = UserModel().user.userExercise;
+  String? _selectedSmoking = UserModel().user.userSmoking;
+  String? _selectedDrinking = UserModel().user.userDrinking;
+  String? _selectedSleepSchedule = UserModel().user.userSleepSchedule;
+  String? _selectedNativeLanguage = UserModel().user.userNativeLanguage;
+
+  List<String> _selectedFutureGoals =
+      List.from(UserModel().user.userFutureGoals);
+  List<String> _selectedResearchInterests =
+      List.from(UserModel().user.userResearchInterests);
+  List<String> _selectedSpokenLanguages =
+      List.from(UserModel().user.userSpokenLanguages);
+
   late AppLocalizations _i18n;
   late ProgressDialog _pr;
 
@@ -187,12 +228,260 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     },
                   ),
                   const SizedBox(height: 20),
+
+                  const Divider(),
+                  const Text("Academic Identity",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+
+                  TextFormField(
+                    controller: _institutionController,
+                    decoration: const InputDecoration(labelText: "Institution"),
+                  ),
+                  const SizedBox(height: 10),
+
+                  TextFormField(
+                    controller: _universityController,
+                    decoration: const InputDecoration(labelText: "University"),
+                  ),
+                  const SizedBox(height: 10),
+
+                  TextFormField(
+                    controller: _collegeController,
+                    decoration: const InputDecoration(labelText: "College"),
+                  ),
+                  const SizedBox(height: 10),
+
+                  DropdownButtonFormField<String>(
+                    value: _selectedDegree!.isEmpty ? null : _selectedDegree,
+                    items: ACADEMIC_DEGREES.map((val) {
+                      return DropdownMenuItem(value: val, child: Text(val));
+                    }).toList(),
+                    hint: const Text("Select Degree"),
+                    onChanged: (val) => setState(() => _selectedDegree = val),
+                  ),
+                  const SizedBox(height: 10),
+
+                  TextFormField(
+                    controller: _courseController,
+                    decoration: const InputDecoration(labelText: "Course"),
+                  ),
+                  const SizedBox(height: 10),
+
+                  DropdownButtonFormField<String>(
+                    value:
+                        _selectedStudyYear!.isEmpty ? null : _selectedStudyYear,
+                    items: STUDY_YEARS.map((val) {
+                      return DropdownMenuItem(value: val, child: Text(val));
+                    }).toList(),
+                    hint: const Text("Study Year"),
+                    onChanged: (val) => setState(() => _selectedStudyYear = val),
+                  ),
+                  const SizedBox(height: 10),
+
+                  TextFormField(
+                    controller: _graduationYearController,
+                    decoration:
+                        const InputDecoration(labelText: "Graduation Year"),
+                    keyboardType: TextInputType.number,
+                  ),
+                  const SizedBox(height: 10),
+
+                  DropdownButtonFormField<String>(
+                    value: _selectedAcademicStatus!.isEmpty
+                        ? null
+                        : _selectedAcademicStatus,
+                    items: ACADEMIC_STATUSES.map((val) {
+                      return DropdownMenuItem(value: val, child: Text(val));
+                    }).toList(),
+                    hint: const Text("Academic Status"),
+                    onChanged: (val) =>
+                        setState(() => _selectedAcademicStatus = val),
+                  ),
+                  const SizedBox(height: 20),
+
+                  const Divider(),
+                  const Text("Professional Identity",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+
+                  TextFormField(
+                    controller: _occupationController,
+                    decoration: const InputDecoration(labelText: "Occupation"),
+                  ),
+                  const SizedBox(height: 10),
+
+                  TextFormField(
+                    controller: _specializationController,
+                    decoration:
+                        const InputDecoration(labelText: "Specialization"),
+                  ),
+                  const SizedBox(height: 10),
+
+                  TextFormField(
+                    controller: _departmentController,
+                    decoration: const InputDecoration(labelText: "Department"),
+                  ),
+                  const SizedBox(height: 10),
+
+                  DropdownButtonFormField<String>(
+                    value: _selectedIndustry!.isEmpty ? null : _selectedIndustry,
+                    items: INDUSTRIES.map((val) {
+                      return DropdownMenuItem(value: val, child: Text(val));
+                    }).toList(),
+                    hint: const Text("Industry"),
+                    onChanged: (val) => setState(() => _selectedIndustry = val),
+                  ),
+                  const SizedBox(height: 20),
+
+                  const Divider(),
+                  const Text("Intent & Lifestyle",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+
+                  DropdownButtonFormField<String>(
+                    value: _selectedRelationshipIntent!.isEmpty
+                        ? null
+                        : _selectedRelationshipIntent,
+                    items: RELATIONSHIP_INTENTS.map((val) {
+                      return DropdownMenuItem(value: val, child: Text(val));
+                    }).toList(),
+                    hint: const Text("Relationship Intent"),
+                    onChanged: (val) =>
+                        setState(() => _selectedRelationshipIntent = val),
+                  ),
+                  const SizedBox(height: 10),
+
+                  DropdownButtonFormField<String>(
+                    value:
+                        _selectedWorkSchedule!.isEmpty
+                            ? null
+                            : _selectedWorkSchedule,
+                    items: WORK_SCHEDULES.map((val) {
+                      return DropdownMenuItem(value: val, child: Text(val));
+                    }).toList(),
+                    hint: const Text("Work Schedule"),
+                    onChanged: (val) =>
+                        setState(() => _selectedWorkSchedule = val),
+                  ),
+                  const SizedBox(height: 10),
+
+                  DropdownButtonFormField<String>(
+                    value: _selectedNativeLanguage!.isEmpty
+                        ? null
+                        : _selectedNativeLanguage,
+                    items: LANGUAGES.map((val) {
+                      return DropdownMenuItem(value: val, child: Text(val));
+                    }).toList(),
+                    hint: const Text("Native Language"),
+                    onChanged: (val) =>
+                        setState(() => _selectedNativeLanguage = val),
+                  ),
+                  const SizedBox(height: 10),
+
+                  DropdownButtonFormField<String>(
+                    value: _selectedSmoking!.isEmpty ? null : _selectedSmoking,
+                    items: SMOKING_HABITS.map((val) {
+                      return DropdownMenuItem(value: val, child: Text(val));
+                    }).toList(),
+                    hint: const Text("Smoking"),
+                    onChanged: (val) => setState(() => _selectedSmoking = val),
+                  ),
+                  const SizedBox(height: 10),
+
+                  DropdownButtonFormField<String>(
+                    value: _selectedDrinking!.isEmpty ? null : _selectedDrinking,
+                    items: DRINKING_HABITS.map((val) {
+                      return DropdownMenuItem(value: val, child: Text(val));
+                    }).toList(),
+                    hint: const Text("Drinking"),
+                    onChanged: (val) => setState(() => _selectedDrinking = val),
+                  ),
+                  const SizedBox(height: 10),
+
+                  DropdownButtonFormField<String>(
+                    value:
+                        _selectedShiftType!.isEmpty ? null : _selectedShiftType,
+                    items: SHIFT_TYPES.map((val) {
+                      return DropdownMenuItem(value: val, child: Text(val));
+                    }).toList(),
+                    hint: const Text("Shift Type"),
+                    onChanged: (val) => setState(() => _selectedShiftType = val),
+                  ),
+                  const SizedBox(height: 10),
+
+                  DropdownButtonFormField<String>(
+                    value: _selectedExercise!.isEmpty ? null : _selectedExercise,
+                    items: EXERCISE_FREQUENCIES.map((val) {
+                      return DropdownMenuItem(value: val, child: Text(val));
+                    }).toList(),
+                    hint: const Text("Exercise"),
+                    onChanged: (val) => setState(() => _selectedExercise = val),
+                  ),
+                  const SizedBox(height: 10),
+
+                  DropdownButtonFormField<String>(
+                    value: _selectedSleepSchedule!.isEmpty
+                        ? null
+                        : _selectedSleepSchedule,
+                    items: SLEEP_SCHEDULES.map((val) {
+                      return DropdownMenuItem(value: val, child: Text(val));
+                    }).toList(),
+                    hint: const Text("Sleep Schedule"),
+                    onChanged: (val) =>
+                        setState(() => _selectedSleepSchedule = val),
+                  ),
+                  const SizedBox(height: 20),
+
+                  _buildMultiSelect(
+                      "Future Goals", FUTURE_GOALS, _selectedFutureGoals),
+                  const SizedBox(height: 10),
+
+                  _buildMultiSelect("Research Interests", RESEARCH_INTERESTS,
+                      _selectedResearchInterests),
+                  const SizedBox(height: 10),
+
+                  _buildMultiSelect(
+                      "Spoken Languages", LANGUAGES, _selectedSpokenLanguages),
+                  const SizedBox(height: 30),
                 ],
               );
             },
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildMultiSelect(
+      String title, List<String> options, List<String> selectedList) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Wrap(
+          spacing: 8,
+          children: options.map((option) {
+            final isSelected = selectedList.contains(option);
+            return FilterChip(
+              label: Text(option),
+              selected: isSelected,
+              onSelected: (selected) {
+                setState(() {
+                  if (selected) {
+                    selectedList.add(option);
+                  } else {
+                    selectedList.remove(option);
+                  }
+                });
+              },
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 
@@ -230,6 +519,32 @@ class EditProfileScreenState extends State<EditProfileScreen> {
       userSchool: _schoolController.text.trim(),
       userJobTitle: _jobController.text.trim(),
       userBio: _bioController.text.trim(),
+      extraData: {
+        USER_INSTITUTION: _institutionController.text.trim(),
+        USER_UNIVERSITY: _universityController.text.trim(),
+        USER_COLLEGE: _collegeController.text.trim(),
+        USER_DEGREE: _selectedDegree ?? "",
+        USER_COURSE: _courseController.text.trim(),
+        USER_STUDY_YEAR: _selectedStudyYear ?? "",
+        USER_GRADUATION_YEAR: _graduationYearController.text.trim(),
+        USER_ACADEMIC_STATUS: _selectedAcademicStatus ?? "",
+        USER_OCCUPATION: _occupationController.text.trim(),
+        USER_SPECIALIZATION: _specializationController.text.trim(),
+        USER_DEPARTMENT: _departmentController.text.trim(),
+        USER_INDUSTRY: _selectedIndustry ?? "",
+        USER_FUTURE_GOALS: _selectedFutureGoals,
+        USER_RESEARCH_INTERESTS: _selectedResearchInterests,
+        USER_NATIVE_LANGUAGE: _selectedNativeLanguage ?? "",
+        USER_SPOKEN_LANGUAGES: _selectedSpokenLanguages,
+        USER_RELATIONSHIP_INTENT: _selectedRelationshipIntent ?? "",
+        USER_WORK_SCHEDULE: _selectedWorkSchedule ?? "",
+        USER_SHIFT_TYPE: _selectedShiftType ?? "",
+        USER_EXERCISE: _selectedExercise ?? "",
+        USER_SMOKING: _selectedSmoking ?? "",
+        USER_DRINKING: _selectedDrinking ?? "",
+        USER_SLEEP_SCHEDULE: _selectedSleepSchedule ?? "",
+        USER_PROFILE_QUALITY_SCORE: UserModel().calculateProfileQualityScore(UserModel().user),
+      },
       onSuccess: () {
         /// Show success message
         successDialog(

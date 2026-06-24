@@ -7,6 +7,10 @@ import 'package:dating_app_dashboard/screens/in_app_purchases.dart';
 import 'package:dating_app_dashboard/screens/push_notifications.dart';
 import 'package:dating_app_dashboard/screens/sign_in_screen.dart';
 import 'package:dating_app_dashboard/screens/users_screen.dart';
+import 'package:dating_app_dashboard/screens/verification_queue_screen.dart';
+import 'package:dating_app_dashboard/screens/moderation_center_screen.dart';
+import 'package:dating_app_dashboard/screens/communities_management.dart';
+import 'package:dating_app_dashboard/screens/analytics_dashboard.dart';
 import 'package:dating_app_dashboard/widgets/app_logo.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +32,15 @@ class _NavigationDrawerState extends State<MyNavigationDrawer> {
 
   final _scrollController = ScrollController();
 
+  Widget _sectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, top: 10, bottom: 5),
+      child: Text(title,
+          style: const TextStyle(
+              color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -38,51 +51,73 @@ class _NavigationDrawerState extends State<MyNavigationDrawer> {
           /// DrawerHeader
           _drawerHeader(context),
           const Divider(height: 0),
+          _sectionTitle("OPERATIONS"),
           ListTile(
-            leading: const Icon(Icons.score),
-            title: Text("Dashboard", style: _menuTextStyle),
+            leading: const Icon(Icons.dashboard_outlined),
+            title: Text("Overview", style: _menuTextStyle),
             onTap: () {
-              // Go to dashboard screen
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const Dashboard()));
             },
           ),
-          const Divider(height: 0),
+          ListTile(
+            leading: const Icon(Icons.verified_user_outlined),
+            title: Text("Verification Queue", style: _menuTextStyle),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const VerificationQueueScreen()));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.account_balance_outlined),
+            title: Text("Communities", style: _menuTextStyle),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const CommunitiesManagementScreen()));
+            },
+          ),
+          const Divider(),
+          _sectionTitle("ANALYTICS"),
+          ListTile(
+            leading: const Icon(Icons.analytics_outlined),
+            title: Text("Performance Stats", style: _menuTextStyle),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const AnalyticsDashboard()));
+            },
+          ),
+          const Divider(),
+          _sectionTitle("TRUST & SAFETY"),
+          ListTile(
+            leading: const Icon(Icons.security_outlined),
+            title: Text("Moderation Center", style: _menuTextStyle),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const ModerationCenterScreen()));
+            },
+          ),
           ListTile(
             leading: const Icon(Icons.people_outline),
-            title: Text("Users", style: _menuTextStyle),
+            title: Text("User Management", style: _menuTextStyle),
             onTap: () {
-              // Go to users screen
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const UsersScreen()));
             },
           ),
-          const Divider(height: 0),
-          ListTile(
-            leading: const Icon(Icons.flag_outlined),
-            title: Text("Flagged Users", style: _menuTextStyle),
-            onTap: () {
-              // Go to flagged users screen
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => FlaggedUsers()));
-            },
-          ),
-          const Divider(height: 0),
+          const Divider(),
+          _sectionTitle("MANAGEMENT"),
           ListTile(
             leading: const Icon(Icons.settings_outlined),
             title: Text("App Settings", style: _menuTextStyle),
             onTap: () {
-              // Go to app settings screen
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const AppSettings()));
             },
           ),
-          const Divider(height: 0),
           ListTile(
-            leading: const Icon(Icons.monetization_on),
-            title: Text("In-App Purchases", style: _menuTextStyle),
+            leading: const Icon(Icons.monetization_on_outlined),
+            title: Text("Revenue & IAP", style: _menuTextStyle),
             onTap: () {
-              // Go to In-App Purchases screen
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => const InAppPurchases()));
             },

@@ -1,4 +1,5 @@
 import 'package:dating_app/datas/user.dart';
+import 'package:dating_app/helpers/compatibility_helper.dart';
 import 'package:dating_app/dialogs/report_dialog.dart';
 import 'package:dating_app/models/user_model.dart';
 import 'package:dating_app/plugins/swipe_stack/swipe_stack.dart';
@@ -38,8 +39,8 @@ class ProfileCard extends StatelessWidget {
 
     //
     // Get User Birthday
-    final DateTime userBirthday = DateTime(UserModel().user.userBirthYear,
-        UserModel().user.userBirthMonth, UserModel().user.userBirthDay);
+    final DateTime userBirthday = DateTime(user.userBirthYear,
+        user.userBirthMonth, user.userBirthDay);
     // Get User Current Age
     final int userAge = UserModel().calculateUserAge(userBirthday);
 
@@ -98,8 +99,61 @@ class ProfileCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
+                          if (user.userIsVerified)
+                            Tooltip(
+                              message: user.userVerificationType == 'Student'
+                                  ? "Verified Student"
+                                  : "Verified Professional",
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Image.asset('assets/images/verified_badge.png',
+                                      width: 25, height: 25),
+                                  Icon(
+                                    user.userVerificationType == 'Student'
+                                        ? Icons.school
+                                        : Icons.work,
+                                    size: 10,
+                                    color: Colors.white,
+                                  )
+                                ],
+                              ),
+                            ),
+                          const Spacer(),
+                          if (UserModel().user.userId != user.userId)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withAlpha(50),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                "${CompatibilityHelper.calculate(UserModel().user, user).score}% Compatible",
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
                         ],
                       ),
+
+                      /// Academic/Professional Summary
+                      if (user.userDegree.isNotEmpty ||
+                          user.userOccupation.isNotEmpty)
+                        Text(
+                          user.userDegree.isNotEmpty
+                              ? "${user.userDegree} ${user.userStudyYear}"
+                              : user.userOccupation,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
 
                       const SizedBox(height: 8.0),
 
@@ -126,53 +180,6 @@ class ProfileCard extends StatelessWidget {
                           ),
                         ],
                       ),
-
-                      /// User education
-
-                      // Note: Uncoment the code below if you want to show the education
-
-                      // Row(
-                      //   children: [
-                      //     const SvgIcon("assets/icons/university_icon.svg",
-                      //         color: Colors.white, width: 20, height: 20),
-                      //     const SizedBox(width: 5),
-                      //     Expanded(
-                      //       child: Text(
-                      //         user.userSchool,
-                      //         style: const TextStyle(
-                      //           color: Colors.white,
-                      //           fontSize: 16,
-                      //         ),
-                      //         maxLines: 1,
-                      //         overflow: TextOverflow.ellipsis,
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
-
-                      // const SizedBox(height: 3),
-
-                      // User job title
-                      // Note: Uncoment the code below if you want to show the job title
-
-                      // Row(
-                      //   children: [
-                      //     const SvgIcon("assets/icons/job_bag_icon.svg",
-                      //         color: Colors.white, width: 17, height: 17),
-                      //     const SizedBox(width: 5),
-                      //     Expanded(
-                      //       child: Text(
-                      //         user.userJobTitle,
-                      //         style: const TextStyle(
-                      //           color: Colors.white,
-                      //           fontSize: 16,
-                      //         ),
-                      //         maxLines: 1,
-                      //         overflow: TextOverflow.ellipsis,
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
 
                       page == 'discover'
                           ? const SizedBox(height: 70)

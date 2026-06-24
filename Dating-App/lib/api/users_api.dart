@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dating_app/api/blocked_users_api.dart';
 import 'package:dating_app/constants/constants.dart';
+import 'package:dating_app/datas/user.dart';
+import 'package:dating_app/helpers/compatibility_helper.dart';
 import 'package:dating_app/models/user_model.dart';
 import 'package:dating_app/plugins/geoflutterfire/geoflutterfire.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,7 @@ class UsersApi {
   /// Get all users
   Future<List<DocumentSnapshot<Map<String, dynamic>>>> getUsers({
     required List<DocumentSnapshot<Map<String, dynamic>>> dislikedUsers,
+    DiscoveryMode discoveryMode = DiscoveryMode.general,
   }) async {
     /// Build Users query
     Query<Map<String, dynamic>> usersQuery = _firestore
@@ -22,6 +25,9 @@ class UsersApi {
 
     // Filter the User Gender
     usersQuery = UserModel().filterUserGender(usersQuery);
+
+    // ONLY SHOW VERIFIED USERS
+    usersQuery = usersQuery.where(USER_VERIFICATION_STATUS, isEqualTo: 'verified');
 
     // Instance of Geoflutterfire
     final Geoflutterfire geo = Geoflutterfire();
@@ -80,8 +86,45 @@ class UsersApi {
       debugPrint('removeBlockedUsers() -> error: $e');
     });
 
-    /// Sort by newest
+    /// Sort by Verification, Compatibility, Quality, and Recency
     allUsers.sort((a, b) {
+      // 1. Ranking Boost (Verification Type)
+      final int boostA =
+          (a.data() as Map<String, dynamic>).containsKey(USER_VERIFICATION_RANKING_BOOST)
+              ? a[USER_VERIFICATION_RANKING_BOOST]
+              : 0;
+      final int boostB =
+          (b.data() as Map<String, dynamic>).containsKey(USER_VERIFICATION_RANKING_BOOST)
+              ? b[USER_VERIFICATION_RANKING_BOOST]
+              : 0;
+
+      if (boostA != boostB) {
+        return boostB.compareTo(boostA);
+      }
+
+      // 2. Compatibility Score
+      final User userA = User.fromDocument(a.data()!);
+      final User userB = User.fromDocument(b.data()!);
+      final int scoreA = CompatibilityHelper.calculate(UserModel().user, userA).score;
+      final int scoreB = CompatibilityHelper.calculate(UserModel().user, userB).score;
+
+      if (scoreA != scoreB) {
+        return scoreB.compareTo(scoreA);
+      }
+
+      // 3. Profile Quality Score
+      final int qualityA = (a.data() as Map<String, dynamic>).containsKey(USER_PROFILE_QUALITY_SCORE)
+          ? a[USER_PROFILE_QUALITY_SCORE]
+          : 0;
+      final int qualityB = (b.data() as Map<String, dynamic>).containsKey(USER_PROFILE_QUALITY_SCORE)
+          ? b[USER_PROFILE_QUALITY_SCORE]
+          : 0;
+
+      if (qualityA != qualityB) {
+          return qualityB.compareTo(qualityA);
+      }
+
+      // 4. Recency
       final DateTime userRegDateA = a[USER_REG_DATE].toDate();
       final DateTime userRegDateB = b[USER_REG_DATE].toDate();
       return userRegDateA.compareTo(userRegDateB);
@@ -90,16 +133,44 @@ class UsersApi {
     final int minAge = settings[USER_MIN_AGE];
     final int maxAge = settings[USER_MAX_AGE];
 
-    // Filter Profile Ages
-    return allUsers.where((DocumentSnapshot<Map<String, dynamic>> user) {
-      // Get User Birthday
-      final DateTime userBirthday = DateTime(
-          user[USER_BIRTH_YEAR], user[USER_BIRTH_MONTH], user[USER_BIRTH_DAY]);
+    // Filter Profile Ages and Discovery Mode
+    return allUsers.where((DocumentSnapshot<Map<String, dynamic>> userDoc) {
+      final User otherUser = User.fromDocument(userDoc.data()!);
+      final User currentUser = UserModel().user;
 
-      /// Get user profile age to filter
+      // 1. Age Filter
+      final DateTime userBirthday = DateTime(otherUser.userBirthYear,
+          otherUser.userBirthMonth, otherUser.userBirthDay);
       final int profileAge = UserModel().calculateUserAge(userBirthday);
-      // Return result
-      return profileAge >= minAge && profileAge <= maxAge;
+      if (profileAge < minAge || profileAge > maxAge) return false;
+
+      // 2. Discovery Mode Filter
+      switch (discoveryMode) {
+        case DiscoveryMode.general:
+          return true;
+        case DiscoveryMode.academic:
+          return otherUser.userDegree.isNotEmpty ||
+              otherUser.userAcademicStatus.isNotEmpty;
+        case DiscoveryMode.sameInstitution:
+          return (otherUser.userInstitution.isNotEmpty &&
+                  otherUser.userInstitution == currentUser.userInstitution) ||
+              (otherUser.userUniversity.isNotEmpty &&
+                  otherUser.userUniversity == currentUser.userUniversity);
+        case DiscoveryMode.sameProfession:
+          return (otherUser.userIndustry.isNotEmpty &&
+                  otherUser.userIndustry == currentUser.userIndustry) ||
+              (otherUser.userOccupation.isNotEmpty &&
+                  otherUser.userOccupation == currentUser.userOccupation);
+        case DiscoveryMode.similarGoals:
+          return otherUser.userFutureGoals
+              .any((goal) => currentUser.userFutureGoals.contains(goal));
+        case DiscoveryMode.highlyCompatible:
+          return CompatibilityHelper.calculate(currentUser, otherUser).score >=
+              75;
+        case DiscoveryMode.seriousRelationships:
+          return otherUser.userRelationshipIntent == 'Marriage' ||
+              otherUser.userRelationshipIntent == 'Long-Term Relationship';
+      }
     }).toList();
   }
 }

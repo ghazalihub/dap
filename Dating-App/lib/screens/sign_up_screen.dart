@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:dating_app/api/verification_api.dart';
 import 'package:dating_app/dialogs/common_dialogs.dart';
+import 'package:dating_app/datas/predefined_choices.dart';
 import 'package:dating_app/helpers/app_localizations.dart';
 import 'package:dating_app/models/user_model.dart';
 import 'package:dating_app/screens/sign_in_screen.dart';
@@ -30,6 +32,34 @@ class SignUpScreenState extends State<SignUpScreen> {
   final _schoolController = TextEditingController();
   final _jobController = TextEditingController();
   final _bioController = TextEditingController();
+
+  // New Identity Controllers
+  final _institutionController = TextEditingController();
+  final _universityController = TextEditingController();
+  final _collegeController = TextEditingController();
+  final _courseController = TextEditingController();
+  final _occupationController = TextEditingController();
+  final _specializationController = TextEditingController();
+  final _departmentController = TextEditingController();
+  final _graduationYearController = TextEditingController();
+
+  // Selection variables
+  String? _selectedDegree;
+  String? _selectedStudyYear;
+  String? _selectedAcademicStatus;
+  String? _selectedIndustry;
+  String? _selectedWorkSchedule;
+  String? _selectedShiftType;
+  String? _selectedExercise;
+  String? _selectedSmoking;
+  String? _selectedDrinking;
+  String? _selectedSleepSchedule;
+  String? _selectedRelationshipIntent;
+  String? _selectedNativeLanguage;
+
+  List<String> _selectedFutureGoals = [];
+  List<String> _selectedResearchInterests = [];
+  List<String> _selectedSpokenLanguages = [];
 
   /// User Birthday info
   int _userBirthDay = 0;
@@ -299,36 +329,6 @@ class SignUpScreenState extends State<SignUpScreen> {
                       ),
                       const SizedBox(height: 20),
 
-                      /// School field
-                      TextFormField(
-                        controller: _schoolController,
-                        decoration: InputDecoration(
-                          labelText: _i18n.translate("school"),
-                          hintText: _i18n.translate("enter_your_school_name"),
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          prefixIcon: const Padding(
-                            padding: EdgeInsets.all(9.0),
-                            child: SvgIcon("assets/icons/university_icon.svg"),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
-                      /// Job title field
-                      TextFormField(
-                        controller: _jobController,
-                        decoration: InputDecoration(
-                          labelText: _i18n.translate("job_title"),
-                          hintText: _i18n.translate("enter_your_job_title"),
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          prefixIcon: const Padding(
-                            padding: EdgeInsets.all(12.0),
-                            child: SvgIcon("assets/icons/job_bag_icon.svg"),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
                       /// Bio field
                       TextFormField(
                         controller: _bioController,
@@ -348,6 +348,217 @@ class SignUpScreenState extends State<SignUpScreen> {
                           }
                           return null;
                         },
+                      ),
+
+                      const SizedBox(height: 30),
+                      const Text("Academic Identity",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+
+                      TextFormField(
+                        controller: _institutionController,
+                        decoration: const InputDecoration(
+                            labelText: "Institution",
+                            hintText: "Enter your Institution"),
+                      ),
+                      const SizedBox(height: 20),
+
+                      TextFormField(
+                        controller: _universityController,
+                        decoration: const InputDecoration(
+                            labelText: "University",
+                            hintText: "Enter your University"),
+                      ),
+                      const SizedBox(height: 20),
+
+                      TextFormField(
+                        controller: _collegeController,
+                        decoration: const InputDecoration(
+                            labelText: "College",
+                            hintText: "Enter your College"),
+                      ),
+                      const SizedBox(height: 20),
+
+                      DropdownButtonFormField<String>(
+                        items: ACADEMIC_DEGREES.map((val) {
+                          return DropdownMenuItem(value: val, child: Text(val));
+                        }).toList(),
+                        hint: const Text("Select Degree"),
+                        onChanged: (val) => setState(() => _selectedDegree = val),
+                      ),
+                      const SizedBox(height: 20),
+
+                      TextFormField(
+                        controller: _courseController,
+                        decoration: const InputDecoration(
+                            labelText: "Course", hintText: "Enter your Course"),
+                      ),
+                      const SizedBox(height: 20),
+
+                      DropdownButtonFormField<String>(
+                        items: STUDY_YEARS.map((val) {
+                          return DropdownMenuItem(value: val, child: Text(val));
+                        }).toList(),
+                        hint: const Text("Study Year"),
+                        onChanged: (val) =>
+                            setState(() => _selectedStudyYear = val),
+                      ),
+                      const SizedBox(height: 20),
+
+                      TextFormField(
+                        controller: _graduationYearController,
+                        decoration: const InputDecoration(
+                            labelText: "Graduation Year",
+                            hintText: "Expected Graduation Year"),
+                        keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(height: 20),
+
+                      DropdownButtonFormField<String>(
+                        items: ACADEMIC_STATUSES.map((val) {
+                          return DropdownMenuItem(value: val, child: Text(val));
+                        }).toList(),
+                        hint: const Text("Academic Status"),
+                        onChanged: (val) =>
+                            setState(() => _selectedAcademicStatus = val),
+                      ),
+                      const SizedBox(height: 30),
+                      const Text("Professional Identity",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+
+                      TextFormField(
+                        controller: _occupationController,
+                        decoration: const InputDecoration(
+                            labelText: "Occupation",
+                            hintText: "e.g. Cardiologist, Software Engineer"),
+                      ),
+                      const SizedBox(height: 20),
+
+                      TextFormField(
+                        controller: _specializationController,
+                        decoration: const InputDecoration(
+                            labelText: "Specialization",
+                            hintText: "Enter specialization"),
+                      ),
+                      const SizedBox(height: 20),
+
+                      TextFormField(
+                        controller: _departmentController,
+                        decoration: const InputDecoration(
+                            labelText: "Department",
+                            hintText: "Enter department"),
+                      ),
+                      const SizedBox(height: 20),
+
+                      DropdownButtonFormField<String>(
+                        items: INDUSTRIES.map((val) {
+                          return DropdownMenuItem(value: val, child: Text(val));
+                        }).toList(),
+                        hint: const Text("Industry"),
+                        onChanged: (val) => setState(() => _selectedIndustry = val),
+                      ),
+                      const SizedBox(height: 30),
+                      const Text("Relationship Intent",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+
+                      DropdownButtonFormField<String>(
+                        items: RELATIONSHIP_INTENTS.map((val) {
+                          return DropdownMenuItem(value: val, child: Text(val));
+                        }).toList(),
+                        hint: const Text("Select Intent"),
+                        onChanged: (val) =>
+                            setState(() => _selectedRelationshipIntent = val),
+                        validator: (val) =>
+                            val == null ? "Please select your intent" : null,
+                      ),
+
+                      const SizedBox(height: 30),
+                      const Text("Lifestyle",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+
+                      DropdownButtonFormField<String>(
+                        items: WORK_SCHEDULES.map((val) {
+                          return DropdownMenuItem(value: val, child: Text(val));
+                        }).toList(),
+                        hint: const Text("Work Schedule"),
+                        onChanged: (val) =>
+                            setState(() => _selectedWorkSchedule = val),
+                      ),
+                      const SizedBox(height: 20),
+
+                      DropdownButtonFormField<String>(
+                        items: SMOKING_HABITS.map((val) {
+                          return DropdownMenuItem(value: val, child: Text(val));
+                        }).toList(),
+                        hint: const Text("Smoking"),
+                        onChanged: (val) => setState(() => _selectedSmoking = val),
+                      ),
+                      const SizedBox(height: 20),
+
+                      DropdownButtonFormField<String>(
+                        items: DRINKING_HABITS.map((val) {
+                          return DropdownMenuItem(value: val, child: Text(val));
+                        }).toList(),
+                        hint: const Text("Drinking"),
+                        onChanged: (val) => setState(() => _selectedDrinking = val),
+                      ),
+                      const SizedBox(height: 20),
+
+                      DropdownButtonFormField<String>(
+                        items: SHIFT_TYPES.map((val) {
+                          return DropdownMenuItem(value: val, child: Text(val));
+                        }).toList(),
+                        hint: const Text("Shift Type"),
+                        onChanged: (val) =>
+                            setState(() => _selectedShiftType = val),
+                      ),
+                      const SizedBox(height: 20),
+
+                      DropdownButtonFormField<String>(
+                        items: EXERCISE_FREQUENCIES.map((val) {
+                          return DropdownMenuItem(value: val, child: Text(val));
+                        }).toList(),
+                        hint: const Text("Exercise"),
+                        onChanged: (val) => setState(() => _selectedExercise = val),
+                      ),
+                      const SizedBox(height: 20),
+
+                      DropdownButtonFormField<String>(
+                        items: SLEEP_SCHEDULES.map((val) {
+                          return DropdownMenuItem(value: val, child: Text(val));
+                        }).toList(),
+                        hint: const Text("Sleep Schedule"),
+                        onChanged: (val) =>
+                            setState(() => _selectedSleepSchedule = val),
+                      ),
+                      const SizedBox(height: 20),
+
+                      _buildMultiSelect(
+                          "Future Goals", FUTURE_GOALS, _selectedFutureGoals),
+                      const SizedBox(height: 20),
+
+                      _buildMultiSelect("Research Interests", RESEARCH_INTERESTS,
+                          _selectedResearchInterests),
+                      const SizedBox(height: 20),
+
+                      _buildMultiSelect(
+                          "Spoken Languages", LANGUAGES, _selectedSpokenLanguages),
+                      const SizedBox(height: 20),
+
+                      DropdownButtonFormField<String>(
+                        items: LANGUAGES.map((val) {
+                          return DropdownMenuItem(value: val, child: Text(val));
+                        }).toList(),
+                        hint: const Text("Native Language"),
+                        onChanged: (val) =>
+                            setState(() => _selectedNativeLanguage = val),
                       ),
 
                       /// Agree terms
@@ -426,6 +637,29 @@ class SignUpScreenState extends State<SignUpScreen> {
         userSchool: _schoolController.text.trim(),
         userJobTitle: _jobController.text.trim(),
         userBio: _bioController.text.trim(),
+        userInstitution: _institutionController.text.trim(),
+        userUniversity: _universityController.text.trim(),
+        userCollege: _collegeController.text.trim(),
+        userDegree: _selectedDegree ?? "",
+        userCourse: _courseController.text.trim(),
+        userStudyYear: _selectedStudyYear ?? "",
+        userGraduationYear: _graduationYearController.text.trim(),
+        userAcademicStatus: _selectedAcademicStatus ?? "",
+        userOccupation: _occupationController.text.trim(),
+        userSpecialization: _specializationController.text.trim(),
+        userDepartment: _departmentController.text.trim(),
+        userIndustry: _selectedIndustry ?? "",
+        userFutureGoals: _selectedFutureGoals,
+        userResearchInterests: _selectedResearchInterests,
+        userNativeLanguage: _selectedNativeLanguage ?? "",
+        userSpokenLanguages: _selectedSpokenLanguages,
+        userWorkSchedule: _selectedWorkSchedule ?? "",
+        userShiftType: _selectedShiftType ?? "",
+        userExercise: _selectedExercise ?? "",
+        userSmoking: _selectedSmoking ?? "",
+        userDrinking: _selectedDrinking ?? "",
+        userSleepSchedule: _selectedSleepSchedule ?? "",
+        userRelationshipIntent: _selectedRelationshipIntent ?? "",
         onSuccess: () async {
           // Show success message
           successDialog(
@@ -460,6 +694,35 @@ class SignUpScreenState extends State<SignUpScreen> {
         },
       );
     }
+  }
+
+  Widget _buildMultiSelect(
+      String title, List<String> options, List<String> selectedList) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Wrap(
+          spacing: 8,
+          children: options.map((option) {
+            final isSelected = selectedList.contains(option);
+            return FilterChip(
+              label: Text(option),
+              selected: isSelected,
+              onSelected: (selected) {
+                setState(() {
+                  if (selected) {
+                    selectedList.add(option);
+                  } else {
+                    selectedList.remove(option);
+                  }
+                });
+              },
+            );
+          }).toList(),
+        ),
+      ],
+    );
   }
 
   /// Handle Agree privacy policy

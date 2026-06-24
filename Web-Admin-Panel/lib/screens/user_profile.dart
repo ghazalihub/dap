@@ -336,6 +336,89 @@ class ProfileScreen extends StatelessWidget {
             ),
             const Divider(thickness: 1),
 
+            // Academic Identity
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text("Academic Identity",
+                  style: TextStyle(color: Colors.grey, fontSize: 18)),
+            ),
+            ListTile(
+                title: const Text('Institution'),
+                trailing: Text(user.userInstitution)),
+            ListTile(
+                title: const Text('University'),
+                trailing: Text(user.userUniversity)),
+            ListTile(
+                title: const Text('College'),
+                trailing: Text(user.userCollege)),
+            ListTile(
+                title: const Text('Degree'),
+                trailing:
+                    Text("${user.userDegree} (${user.userStudyYear})")),
+            ListTile(title: const Text('Course'), trailing: Text(user.userCourse)),
+            const Divider(thickness: 1),
+
+            // Professional Identity
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text("Professional Identity",
+                  style: TextStyle(color: Colors.grey, fontSize: 18)),
+            ),
+            ListTile(
+                title: const Text('Occupation'),
+                trailing: Text(user.userOccupation)),
+            ListTile(
+                title: const Text('Specialization'),
+                trailing: Text(user.userSpecialization)),
+            ListTile(
+                title: const Text('Department'),
+                trailing: Text(user.userDepartment)),
+            ListTile(
+                title: const Text('Industry'),
+                trailing: Text(user.userIndustry)),
+            const Divider(thickness: 1),
+
+            // Future Goals & Interests
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text("Goals & Interests",
+                  style: TextStyle(color: Colors.grey, fontSize: 18)),
+            ),
+            ListTile(
+                title: const Text('Future Goals'),
+                trailing: Text(user.userFutureGoals.join(", "))),
+            ListTile(
+                title: const Text('Research Interests'),
+                trailing: Text(user.userResearchInterests.join(", "))),
+            const Divider(thickness: 1),
+
+            // Intent & Lifestyle
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text("Intent & Lifestyle",
+                  style: TextStyle(color: Colors.grey, fontSize: 18)),
+            ),
+            ListTile(
+                title: const Text('Relationship Intent'),
+                trailing: Text(user.userRelationshipIntent)),
+            ListTile(
+                title: const Text('Smoking'), trailing: Text(user.userSmoking)),
+            ListTile(
+                title: const Text('Drinking'), trailing: Text(user.userDrinking)),
+            ListTile(
+                title: const Text('Work Schedule'),
+                trailing: Text(user.userWorkSchedule)),
+            ListTile(
+                title: const Text('Shift Type'),
+                trailing: Text(user.userShiftType)),
+            ListTile(
+                title: const Text('Exercise'),
+                trailing: Text(user.userExercise)),
+            ListTile(
+                title: const Text('Sleep Schedule'),
+                trailing: Text(user.userSleepSchedule)),
+            const Divider(thickness: 1),
+
             // User location
             ListTile(
               leading: Icon(Icons.location_on_outlined,

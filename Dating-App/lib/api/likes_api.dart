@@ -49,6 +49,12 @@ class LikesApi {
       required String userDeviceToken,
       required String nMessage,
       required Function(bool) onLikeResult}) async {
+    /// CHECK VERIFICATION FIRST
+    if (UserModel().user.userVerificationStatus != 'verified') {
+      onLikeResult(false);
+      return;
+    }
+
     /// Check if current user already liked profile
     _firestore
         .collection(C_LIKES)

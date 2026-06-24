@@ -62,6 +62,53 @@ const String USER_DEVICE_TOKEN = "user_device_token";
 const String USER_TOTAL_LIKES = "user_total_likes";
 const String USER_TOTAL_VISITS = "user_total_visits";
 const String USER_TOTAL_DISLIKED = "user_total_disliked";
+// Academic Identity
+const String USER_INSTITUTION = "user_institution";
+const String USER_UNIVERSITY = "user_university";
+const String USER_COLLEGE = "user_college";
+const String USER_DEGREE = "user_degree";
+const String USER_COURSE = "user_course";
+const String USER_STUDY_YEAR = "user_study_year";
+const String USER_GRADUATION_YEAR = "user_graduation_year";
+const String USER_ACADEMIC_STATUS = "user_academic_status";
+// Professional Identity
+const String USER_OCCUPATION = "user_occupation";
+const String USER_SPECIALIZATION = "user_specialization";
+const String USER_DEPARTMENT = "user_department";
+const String USER_INDUSTRY = "user_industry";
+// Future Goals
+const String USER_FUTURE_GOALS = "user_future_goals";
+// Research Interests
+const String USER_RESEARCH_INTERESTS = "user_research_interests";
+// Languages
+const String USER_NATIVE_LANGUAGE = "user_native_language";
+const String USER_SPOKEN_LANGUAGES = "user_spoken_languages";
+// Lifestyle
+const String USER_WORK_SCHEDULE = "user_work_schedule";
+const String USER_SHIFT_TYPE = "user_shift_type";
+const String USER_EXERCISE = "user_exercise";
+const String USER_SMOKING = "user_smoking";
+const String USER_DRINKING = "user_drinking";
+const String USER_SLEEP_SCHEDULE = "user_sleep_schedule";
+// Relationship Intent
+const String USER_RELATIONSHIP_INTENT = "user_relationship_intent";
+// Verification fields
+const String USER_VERIFICATION_STATUS = "user_verification_status"; // pending, verified, rejected, unverified
+const String USER_VERIFICATION_TYPE = "user_verification_type"; // student, professional, institution
+const String USER_VERIFICATION_ID_NUMBER = "user_verification_id_number";
+const String USER_VERIFICATION_DOCUMENT_URL = "user_verification_document_url";
+const String USER_VERIFICATION_RANKING_BOOST = "user_verification_ranking_boost";
+// Trust & Safety fields
+const String USER_SUSPENSION_END_DATE = "user_suspension_end_date";
+const String USER_IS_SUSPENDED = "user_is_suspended";
+const String USER_IS_BANNED = "user_is_banned";
+const String USER_PROFILE_QUALITY_SCORE = "user_profile_quality_score";
+const String USER_BAN_REASON = "user_ban_reason";
+
+// Collections
+const String C_REPORTS = "Reports";
+const String C_COMMUNITIES = "Communities";
+
 // User Setting map - fields
 const String USER_MIN_AGE = "user_min_age";
 const String USER_MAX_AGE = "user_max_age";

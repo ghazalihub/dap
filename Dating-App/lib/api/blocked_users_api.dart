@@ -9,12 +9,26 @@ class BlockedUsersApi {
   final _firestore = FirebaseFirestore.instance;
 
   // Save blocked user in database
-  Future<void> _saveBlockedUser(String blockedUserId) async {
+  Future<void> _saveBlockedUser(String blockedUserId, {bool restrictedOnly = false}) async {
     _firestore.collection(C_BLOCKED_USERS).add({
       BLOCKED_USER_ID: blockedUserId,
       BLOCKED_BY_USER_ID: UserModel().user.userId,
+      'restrictedOnly': restrictedOnly,
       TIMESTAMP: FieldValue.serverTimestamp()
     });
+  }
+
+  /// Restrict user interactions (lighter than blocking)
+  Future<void> restrictUser({required String blockedUserId}) async {
+    final query = await _firestore
+            .collection(C_BLOCKED_USERS)
+            .where(BLOCKED_BY_USER_ID, isEqualTo: UserModel().user.userId)
+            .where(BLOCKED_USER_ID, isEqualTo: blockedUserId)
+            .get();
+
+    if (query.docs.isEmpty) {
+      await _saveBlockedUser(blockedUserId, restrictedOnly: true);
+    }
   }
 
   /// Get blocked profiles for current user

@@ -4,6 +4,7 @@ import 'package:dating_app/api/matches_api.dart';
 import 'package:dating_app/datas/user.dart';
 import 'package:dating_app/dialogs/its_match_dialog.dart';
 import 'package:dating_app/dialogs/report_dialog.dart';
+import 'package:dating_app/helpers/compatibility_helper.dart';
 import 'package:dating_app/helpers/app_helper.dart';
 import 'package:dating_app/helpers/app_localizations.dart';
 import 'package:dating_app/models/user_model.dart';
@@ -118,10 +119,30 @@ class ProfileScreenState extends State<ProfileScreen> {
                               widget.user.userIsVerified
                                   ? Container(
                                       margin: const EdgeInsets.only(right: 5),
-                                      child: Image.asset(
-                                          'assets/images/verified_badge.png',
-                                          width: 30,
-                                          height: 30))
+                                      child: Tooltip(
+                                        message: widget.user
+                                                    .userVerificationType ==
+                                                'Student'
+                                            ? "Verified Student"
+                                            : "Verified Professional",
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            Image.asset(
+                                                'assets/images/verified_badge.png',
+                                                width: 35,
+                                                height: 35),
+                                            Icon(
+                                              widget.user.userVerificationType ==
+                                                      'Student'
+                                                  ? Icons.school
+                                                  : Icons.work,
+                                              size: 15,
+                                              color: Colors.white,
+                                            )
+                                          ],
+                                        ),
+                                      ))
                                   : const SizedBox(width: 0, height: 0),
 
                               /// Show VIP badge for current user
@@ -201,6 +222,116 @@ class ProfileScreenState extends State<ProfileScreen> {
 
                           const Divider(),
 
+                          /// Academic Identity Section
+                          if (widget.user.userDegree.isNotEmpty ||
+                              widget.user.userAcademicStatus.isNotEmpty)
+                            _buildProfileSection(
+                              context,
+                              title: "Academic Identity",
+                              items: [
+                                _profileInfoItem("Institution",
+                                    widget.user.userInstitution),
+                                _profileInfoItem(
+                                    "University", widget.user.userUniversity),
+                                _profileInfoItem(
+                                    "College", widget.user.userCollege),
+                                _profileInfoItem(
+                                    "Degree", widget.user.userDegree),
+                                _profileInfoItem(
+                                    "Course", widget.user.userCourse),
+                                _profileInfoItem(
+                                    "Study Year", widget.user.userStudyYear),
+                                _profileInfoItem("Academic Status",
+                                    widget.user.userAcademicStatus),
+                              ],
+                            ),
+
+                          /// Professional Identity Section
+                          if (widget.user.userOccupation.isNotEmpty)
+                            _buildProfileSection(
+                              context,
+                              title: "Professional Identity",
+                              items: [
+                                _profileInfoItem("Occupation",
+                                    widget.user.userOccupation),
+                                _profileInfoItem("Specialization",
+                                    widget.user.userSpecialization),
+                                _profileInfoItem("Department",
+                                    widget.user.userDepartment),
+                                _profileInfoItem("Industry",
+                                    widget.user.userIndustry),
+                              ],
+                            ),
+
+                          /// Future Goals & Interests
+                          if (widget.user.userFutureGoals.isNotEmpty ||
+                              widget.user.userResearchInterests.isNotEmpty)
+                            _buildProfileSection(
+                              context,
+                              title: "Goals & Interests",
+                              items: [
+                                _profileInfoItem("Future Goals",
+                                    widget.user.userFutureGoals.join(", ")),
+                                _profileInfoItem(
+                                    "Research Interests",
+                                    widget.user.userResearchInterests
+                                        .join(", ")),
+                              ],
+                            ),
+
+                          /// Relationship Intent Section
+                          if (widget.user.userRelationshipIntent.isNotEmpty)
+                            _buildProfileSection(
+                              context,
+                              title: "Relationship Intent",
+                              items: [
+                                _profileInfoItem("Looking for",
+                                    widget.user.userRelationshipIntent),
+                              ],
+                            ),
+
+                          /// Lifestyle Section
+                          if (widget.user.userWorkSchedule.isNotEmpty ||
+                              widget.user.userShiftType.isNotEmpty ||
+                              widget.user.userExercise.isNotEmpty ||
+                              widget.user.userSleepSchedule.isNotEmpty)
+                            _buildProfileSection(
+                              context,
+                              title: "Lifestyle",
+                              items: [
+                                _profileInfoItem("Work Schedule",
+                                    widget.user.userWorkSchedule),
+                                _profileInfoItem(
+                                    "Shift Type", widget.user.userShiftType),
+                                _profileInfoItem(
+                                    "Exercise", widget.user.userExercise),
+                                _profileInfoItem(
+                                    "Sleep Schedule", widget.user.userSleepSchedule),
+                                _profileInfoItem(
+                                    "Smoking", widget.user.userSmoking),
+                                _profileInfoItem(
+                                    "Drinking", widget.user.userDrinking),
+                              ],
+                            ),
+
+                          /// Languages Section
+                          if (widget.user.userNativeLanguage.isNotEmpty ||
+                              widget.user.userSpokenLanguages.isNotEmpty)
+                            _buildProfileSection(
+                              context,
+                              title: "Languages",
+                              items: [
+                                _profileInfoItem("Native Language",
+                                    widget.user.userNativeLanguage),
+                                _profileInfoItem("Spoken Languages",
+                                    widget.user.userSpokenLanguages.join(", ")),
+                              ],
+                            ),
+
+                          /// Compatibility Section
+                          if (UserModel().user.userId != widget.user.userId)
+                            _buildCompatibilitySection(context),
+
                           /// Profile bio
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -263,6 +394,113 @@ class ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Widget _buildProfileSection(BuildContext context,
+      {required String title, required List<Widget> items}) {
+    // Filter out empty items
+    final visibleItems = items.where((item) {
+      if (item is _ProfileInfoItemWidget) {
+        return item.value.isNotEmpty;
+      }
+      return true;
+    }).toList();
+
+    if (visibleItems.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Divider(),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(title,
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor)),
+        ),
+        ...visibleItems,
+      ],
+    );
+  }
+
+  Widget _profileInfoItem(String label, String value) {
+    return _ProfileInfoItemWidget(label: label, value: value);
+  }
+
+  Widget _buildCompatibilitySection(BuildContext context) {
+    final result = CompatibilityHelper.calculate(UserModel().user, widget.user);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Divider(),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Text("Compatibility: ",
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor)),
+              Text("${result.score}%",
+                  style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green)),
+            ],
+          ),
+        ),
+        if (result.explanations.isNotEmpty)
+          ...result.explanations.map((explanation) => Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                child: Row(
+                  children: [
+                    const Icon(Icons.check_circle_outline,
+                        size: 18, color: Colors.green),
+                    const SizedBox(width: 8),
+                    Expanded(
+                        child: Text(explanation,
+                            style: const TextStyle(fontSize: 16))),
+                  ],
+                ),
+              )),
+      ],
+    );
+  }
+}
+
+class _ProfileInfoItemWidget extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _ProfileInfoItemWidget({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    if (value.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("$label: ",
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Colors.black87)),
+          Expanded(
+            child: Text(value,
+                style: const TextStyle(fontSize: 16, color: Colors.black54)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+extension on ProfileScreenState {
   /// Build Like and Dislike buttons
   Widget _buildButtons(BuildContext context) {
     return Container(

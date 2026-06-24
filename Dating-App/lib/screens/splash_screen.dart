@@ -60,11 +60,16 @@ class SplashScreenState extends State<SplashScreen> {
       } else {
         /// Authenticate User Account
         UserModel().authUserAccount(
-            updateLocationScreen: () => _nextScreen(const UpdateLocationScreen()),
+            updateLocationScreen: () =>
+                _nextScreen(const UpdateLocationScreen()),
             signInScreen: () => _nextScreen(const SignInScreen()),
             signUpScreen: () => _nextScreen(const SignUpScreen()),
             homeScreen: () => _nextScreen(const HomeScreen()),
-            blockedScreen: () => _nextScreen(const BlockedAccountScreen()));
+            blockedScreen: (isSuspended, end, reason) => _nextScreen(
+                BlockedAccountScreen(
+                    isSuspended: isSuspended,
+                    suspensionEndDate: end,
+                    reason: reason)));
       }
     });
   }
