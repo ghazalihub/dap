@@ -5,12 +5,15 @@ import ModerationCenter from './pages/ModerationCenter';
 import PushNotifications from './pages/PushNotifications';
 import AppSettings from './pages/AppSettings';
 import UsersScreen from './pages/UsersScreen';
+import CommunitiesManagement from './pages/CommunitiesManagement';
+import InAppPurchases from './pages/InAppPurchases';
+import AdminProfile from './pages/AdminProfile';
 import {
   Drawer, List, ListItem, ListItemIcon, ListItemText,
   Box, Typography, ListItemButton
 } from '@mui/material';
 import {
-  Dashboard, VerifiedUser, Gavel, People, Settings
+  Dashboard, VerifiedUser, Gavel, People, Settings, Groups, MonetizationOn, Person
 } from '@mui/icons-material';
 
 const App = () => {
@@ -53,6 +56,22 @@ const App = () => {
                 </ListItem>
              </List>
 
+             <Typography variant="caption" className="text-gray-400 uppercase font-bold text-[10px] mt-4 block">Management</Typography>
+             <List>
+                <ListItem disablePadding>
+                  <ListItemButton component={Link} to="/communities">
+                    <ListItemIcon><Groups /></ListItemIcon>
+                    <ListItemText primary="Communities" />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton component={Link} to="/purchases">
+                    <ListItemIcon><MonetizationOn /></ListItemIcon>
+                    <ListItemText primary="Revenue" />
+                  </ListItemButton>
+                </ListItem>
+             </List>
+
              <Typography variant="caption" className="text-gray-400 uppercase font-bold text-[10px] mt-4 block">Trust & Safety</Typography>
              <List>
                 <ListItem disablePadding>
@@ -77,6 +96,12 @@ const App = () => {
                     <ListItemText primary="Settings" />
                   </ListItemButton>
                 </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton component={Link} to="/admin">
+                    <ListItemIcon><Person /></ListItemIcon>
+                    <ListItemText primary="Admin Profile" />
+                  </ListItemButton>
+                </ListItem>
              </List>
           </Box>
         </Drawer>
@@ -89,6 +114,9 @@ const App = () => {
             <Route path="/notifications" element={<PushNotifications />} />
             <Route path="/settings" element={<AppSettings />} />
             <Route path="/users" element={<UsersScreen />} />
+            <Route path="/communities" element={<CommunitiesManagement />} />
+            <Route path="/purchases" element={<InAppPurchases />} />
+            <Route path="/admin" element={<AdminProfile />} />
             <Route path="/" element={<Navigate to="/dashboard" />} />
           </Routes>
         </main>

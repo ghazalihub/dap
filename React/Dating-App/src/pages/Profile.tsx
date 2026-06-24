@@ -27,15 +27,15 @@ const Profile = () => {
       <Box className="flex flex-col items-center py-6">
         <div className="relative">
            <Avatar
-             src={user?.userProfilePhoto}
+             src={user?.user_profile_photo}
              className="w-24 h-24 border-4 border-white shadow-md"
            />
-           {user?.userIsVerified && (
+           {user?.user_is_verified && (
              <Verified className="absolute bottom-0 right-0 text-blue-500 bg-white rounded-full" />
            )}
         </div>
-        <Typography variant="h6" className="font-bold mt-4">{user?.userFullname}</Typography>
-        <Typography variant="body2" className="text-gray-500">{user?.userDegree} • {user?.userUniversity}</Typography>
+        <Typography variant="h6" className="font-bold mt-4">{user?.user_fullname}</Typography>
+        <Typography variant="body2" className="text-gray-500">{user?.user_degree} • {user?.user_university}</Typography>
       </Box>
 
       {/* Stats */}

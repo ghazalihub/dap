@@ -12,7 +12,7 @@ const Premium = () => {
 
   const handlePurchase = (id: string) => {
     // Mock purchase logic
-    updateUser({ userIsVerified: true }); // Simplified for clone
+    updateUser({ user_is_verified: true }); // Simplified for clone
     alert(`Purchase of ${id} successful! You are now a VIP member.`);
     navigate('/profile');
   };
@@ -55,7 +55,7 @@ const Premium = () => {
          </List>
       </Paper>
 
-      {user?.userIsVerified && (
+      {user?.user_is_verified && (
         <Box className="bg-blue-50 p-6 rounded-3xl border border-blue-100 text-center">
            <Typography variant="subtitle2" className="text-blue-700 font-bold">Verified Scholar Discount</Typography>
            <Typography variant="caption" className="text-blue-600 block mb-3">Since you are a verified scholar, you get 20% off all plans.</Typography>

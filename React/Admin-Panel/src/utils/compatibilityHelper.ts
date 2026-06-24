@@ -1,7 +1,7 @@
 export interface User {
-  userId: string;
-  userFullname: string;
-  userGender: string;
+  user_id: string;
+  user_fullname: string;
+  user_gender: string;
   userBirthDay: number;
   userBirthMonth: number;
   userBirthYear: number;
@@ -9,7 +9,7 @@ export interface User {
   userJobTitle: string;
   userBio: string;
   userInterests: string[];
-  userProfilePhoto: string;
+  user_profile_photo: string;
   userGallery: string[];
   userDeviceToken: string;
   userRegDate: any;
@@ -18,22 +18,22 @@ export interface User {
   userTotalLikes: number;
   userTotalVisits: number;
   userTotalDislikes: number;
-  userLocation: {
+  user_location: {
     latitude: number;
     longitude: number;
     address: string;
   };
-  userStatus: 'active' | 'suspended' | 'banned';
-  userIsVerified: boolean;
-  verificationStatus: 'unverified' | 'pending' | 'verified' | 'rejected';
+  user_status: 'active' | 'suspended' | 'banned';
+  user_is_verified: boolean;
+  verification_status: 'unverified' | 'pending' | 'verified' | 'rejected';
   verificationType?: 'student' | 'professional';
   verificationTier?: 'standard' | 'representative';
 
   // Academic Fields
-  userDegree: string;
+  user_degree: string;
   userUniversity: string;
   userCollege: string;
-  userInstitution: string;
+  user_institution: string;
   userAcademicStatus: string;
   userStudyYear: string;
   userGraduationYear: string;
@@ -42,7 +42,7 @@ export interface User {
   userOccupation: string;
   userSpecialization: string;
   userDepartment: string;
-  userIndustry: string;
+  user_industry: string;
 
   // Lifestyle & Interests
   userFutureGoals: string[];
@@ -57,9 +57,9 @@ export interface User {
   userRelationshipIntent: string;
 
   // Trust & Safety
-  profileQualityScore: number;
-  sanctionReason?: string;
-  sanctionExpiry?: any;
+  profile_quality_score: number;
+  sanction_reason?: string;
+  sanction_expiry?: any;
 }
 
 export interface CompatibilityResult {
@@ -73,18 +73,18 @@ export class CompatibilityHelper {
     const explanations: string[] = [];
 
     // 1. Education Similarity (20 points)
-    if (currentUser.userDegree && currentUser.userDegree === otherUser.userDegree) {
+    if (currentUser.user_degree && currentUser.user_degree === otherUser.user_degree) {
       totalScore += 20;
-      explanations.push(`You both are pursuing or hold a ${currentUser.userDegree} degree.`);
+      explanations.push(`You both are pursuing or hold a ${currentUser.user_degree} degree.`);
     } else if (currentUser.userUniversity && currentUser.userUniversity === otherUser.userUniversity) {
       totalScore += 15;
       explanations.push(`You both attended ${currentUser.userUniversity}.`);
     }
 
     // 2. Career & Industry (20 points)
-    if (currentUser.userIndustry && currentUser.userIndustry === otherUser.userIndustry) {
+    if (currentUser.user_industry && currentUser.user_industry === otherUser.user_industry) {
       totalScore += 20;
-      explanations.push(`You both work in the ${currentUser.userIndustry} industry.`);
+      explanations.push(`You both work in the ${currentUser.user_industry} industry.`);
     }
 
     // 3. Relationship Intent (20 points)

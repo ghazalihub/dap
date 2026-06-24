@@ -22,8 +22,8 @@ const UsersScreen = () => {
   }, []);
 
   const filteredUsers = users.filter(u =>
-    u.userFullname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    u.userInstitution?.toLowerCase().includes(searchTerm.toLowerCase())
+    u.user_fullname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    u.user_institution?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -62,24 +62,24 @@ const UsersScreen = () => {
               <TableRow key={u.id} hover>
                 <TableCell>
                   <Box className="flex items-center gap-3">
-                    <Avatar src={u.userProfilePhoto} className="w-10 h-10" />
+                    <Avatar src={u.user_profile_photo} className="w-10 h-10" />
                     <div>
-                      <Typography variant="subtitle2" className="font-bold">{u.userFullname}</Typography>
-                      <Typography variant="caption" className="text-gray-500">{u.userId}</Typography>
+                      <Typography variant="subtitle2" className="font-bold">{u.user_fullname}</Typography>
+                      <Typography variant="caption" className="text-gray-500">{u.user_id}</Typography>
                     </div>
                   </Box>
                 </TableCell>
                 <TableCell>
                    <Chip
-                     label={u.userStatus || 'Active'}
+                     label={u.user_status || 'Active'}
                      size="small"
-                     color={u.userStatus === 'active' ? 'success' : 'error'}
+                     color={u.user_status === 'active' ? 'success' : 'error'}
                      variant="outlined"
                    />
                 </TableCell>
                 <TableCell>
-                   <Typography variant="body2" className="font-medium">{u.userDegree}</Typography>
-                   <Typography variant="caption" className="text-gray-400">{u.userInstitution}</Typography>
+                   <Typography variant="body2" className="font-medium">{u.user_degree}</Typography>
+                   <Typography variant="caption" className="text-gray-400">{u.user_institution}</Typography>
                 </TableCell>
                 <TableCell>
                    <Typography variant="caption">{u.userLastLogin?.seconds ? new Date(u.userLastLogin.seconds * 1000).toLocaleDateString() : 'N/A'}</Typography>

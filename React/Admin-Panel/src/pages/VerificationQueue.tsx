@@ -12,19 +12,19 @@ const VerificationQueue = () => {
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
   const fetchQueue = async () => {
-    const q = query(collection(db, 'users'), where('verificationStatus', '==', 'pending'));
+    const q = query(collection(db, 'users'), where('verification_status', '==', 'pending'));
     const snap = await getDocs(q);
     setItems(snap.docs.map(d => ({ id: d.id, ...d.data() })));
   };
 
   useEffect(() => { fetchQueue(); }, []);
 
-  const handleAction = async (userId: string, status: string, tier: string = 'standard') => {
-    await updateDoc(doc(db, 'users', userId), {
-      verificationStatus: status,
-      userIsVerified: status === 'verified',
+  const handleAction = async (user_id: string, status: string, tier: string = 'standard') => {
+    await updateDoc(doc(db, 'users', user_id), {
+      verification_status: status,
+      user_is_verified: status === 'verified',
       verificationTier: tier,
-      profileQualityScore: status === 'verified' ? 80 : 50
+      profile_quality_score: status === 'verified' ? 80 : 50
     });
     fetchQueue();
     setSelectedUser(null);
@@ -50,15 +50,15 @@ const VerificationQueue = () => {
               <TableRow key={row.id}>
                 <TableCell>
                   <Box className="flex items-center gap-3">
-                    <Avatar src={row.userProfilePhoto} />
+                    <Avatar src={row.user_profile_photo} />
                     <div>
-                      <Typography variant="subtitle2" className="font-bold">{row.userFullname}</Typography>
-                      <Typography variant="caption" className="text-gray-500">{row.userDegree}</Typography>
+                      <Typography variant="subtitle2" className="font-bold">{row.user_fullname}</Typography>
+                      <Typography variant="caption" className="text-gray-500">{row.user_degree}</Typography>
                     </div>
                   </Box>
                 </TableCell>
                 <TableCell><Chip label={row.verificationType || 'Student ID'} size="small" variant="outlined" /></TableCell>
-                <TableCell>{row.userInstitution}</TableCell>
+                <TableCell>{row.user_institution}</TableCell>
                 <TableCell>{new Date(row.userRegDate?.seconds * 1000).toLocaleDateString()}</TableCell>
                 <TableCell className="text-right">
                   <Button variant="contained" size="small" onClick={() => setSelectedUser(row)}>Review</Button>
@@ -84,7 +84,7 @@ const VerificationQueue = () => {
                  </div>
                  <div>
                     <Typography variant="caption" className="text-gray-400 uppercase font-bold">Industry</Typography>
-                    <Typography variant="body2">{selectedUser.userIndustry}</Typography>
+                    <Typography variant="body2">{selectedUser.user_industry}</Typography>
                  </div>
               </div>
             </div>

@@ -11,8 +11,8 @@ interface BlockedAccountProps {
 }
 
 const BlockedAccount = ({ user }: BlockedAccountProps) => {
-  const isBanned = user.userStatus === 'banned';
-  const expiryDate = user.sanctionExpiry?.seconds ? new Date(user.sanctionExpiry.seconds * 1000).toLocaleDateString() : 'N/A';
+  const isBanned = user.user_status === 'banned';
+  const expiryDate = user.sanction_expiry?.seconds ? new Date(user.sanction_expiry.seconds * 1000).toLocaleDateString() : 'N/A';
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50">
@@ -32,7 +32,7 @@ const BlockedAccount = ({ user }: BlockedAccountProps) => {
         <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100 text-left mb-8 space-y-3">
            <div>
               <Typography variant="caption" className="font-bold text-gray-400 uppercase">Reason</Typography>
-              <Typography variant="body2" className="font-medium">{user.sanctionReason || 'Terms of Service violation.'}</Typography>
+              <Typography variant="body2" className="font-medium">{user.sanction_reason || 'Terms of Service violation.'}</Typography>
            </div>
            {!isBanned && (
              <div>

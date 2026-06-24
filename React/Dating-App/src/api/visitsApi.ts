@@ -11,10 +11,10 @@ export const VisitsApi = {
     });
   },
 
-  getVisits: async (userId: string) => {
+  getVisits: async (user_id: string) => {
     const q = query(
       collection(db, 'visits'),
-      where('visitedId', '==', userId),
+      where('visitedId', '==', user_id),
       orderBy('timestamp', 'desc'),
       limit(50)
     );

@@ -22,7 +22,7 @@ const Passport = () => {
 
   const handleSelect = (loc: any) => {
     updateUser({
-      userLocation: {
+      user_location: {
         latitude: loc.lat,
         longitude: loc.lng,
         address: loc.name
@@ -77,7 +77,7 @@ const Passport = () => {
 
       <Box className="bg-primary/5 p-6 rounded-3xl border border-primary/10 text-center">
          <Typography variant="subtitle2" className="text-primary font-bold">Currently set to:</Typography>
-         <Typography variant="body1" className="font-medium text-gray-800">{user?.userLocation?.address || 'Current Location'}</Typography>
+         <Typography variant="body1" className="font-medium text-gray-800">{user?.user_location?.address || 'Current Location'}</Typography>
          <Button
             className="mt-4 text-primary font-bold"
             onClick={() => handleSelect({ name: 'Oxford, UK', lat: 51.7520, lng: -1.2577 })}

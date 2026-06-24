@@ -3,21 +3,21 @@ import { collection, addDoc, serverTimestamp, query, where, getDocs, updateDoc, 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export const VerificationApi = {
-  submitVerification: async (userId: string, data: {
+  submitVerification: async (user_id: string, data: {
     type: 'student' | 'professional',
     institution: string,
     file: File
   }) => {
     // 1. Upload Document
-    const fileRef = ref(storage, `verifications/${userId}/${Date.now()}.jpg`);
+    const fileRef = ref(storage, `verifications/${user_id}/${Date.now()}.jpg`);
     await uploadBytes(fileRef, data.file);
     const fileUrl = await getDownloadURL(fileRef);
 
     // 2. Create Verification Entry
-    await updateDoc(doc(db, 'users', userId), {
-      verificationStatus: 'pending',
+    await updateDoc(doc(db, 'users', user_id), {
+      verification_status: 'pending',
       verificationType: data.type,
-      userInstitution: data.institution,
+      user_institution: data.institution,
       verificationDocUrl: fileUrl
     });
   }
@@ -29,9 +29,9 @@ export const CommunityApi = {
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   },
 
-  joinCommunity: async (userId: string, communityId: string) => {
+  joinCommunity: async (user_id: string, communityId: string) => {
     await addDoc(collection(db, 'community_members'), {
-      userId,
+      user_id,
       communityId,
       joinedAt: serverTimestamp()
     });

@@ -21,22 +21,22 @@ const Onboarding = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    userFullname: '',
-    userGender: '',
-    userBio: '',
-    userDegree: '',
-    userUniversity: '',
+    user_fullname: '',
+    user_gender: '',
+    user_bio: '',
+    user_degree: '',
+    user_university: '',
     userCollege: '',
-    userInstitution: '',
-    userAcademicStatus: '',
+    user_institution: '',
+    user_academic_status: '',
     userStudyYear: '',
     userGraduationYear: '',
-    userOccupation: '',
+    user_occupation: '',
     userSpecialization: '',
     userDepartment: '',
-    userIndustry: '',
-    userFutureGoals: [] as string[],
-    userResearchInterests: [] as string[],
+    user_industry: '',
+    user_future_goals: [] as string[],
+    user_research_interests: [] as string[],
     userLanguages: [] as string[],
     userWorkSchedule: '',
     userShiftType: '',
@@ -44,7 +44,7 @@ const Onboarding = () => {
     userSmoking: '',
     userDrinking: '',
     userSleepSchedule: '',
-    userRelationshipIntent: '',
+    user_relationship_intent: '',
   });
 
   const [photo, setPhoto] = useState<File | null>(null);
@@ -86,12 +86,12 @@ const Onboarding = () => {
 
       const userData = {
         ...formData,
-        userId: auth.currentUser.uid,
-        userProfilePhoto: photoUrl,
-        userIsVerified: false,
-        verificationStatus: 'unverified',
-        userStatus: 'active',
-        profileQualityScore: 50, // Initial score
+        user_id: auth.currentUser.uid,
+        user_profile_photo: photoUrl,
+        user_is_verified: false,
+        verification_status: 'unverified',
+        user_status: 'active',
+        profile_quality_score: 50, // Initial score
         userRegDate: serverTimestamp(),
         userLastLogin: serverTimestamp(),
       };
@@ -110,16 +110,16 @@ const Onboarding = () => {
       case 0:
         return (
           <div className="space-y-4">
-            <TextField fullWidth label="Full Name" name="userFullname" value={formData.userFullname} onChange={handleChange} />
+            <TextField fullWidth label="Full Name" name="user_fullname" value={formData.user_fullname} onChange={handleChange} />
             <FormControl fullWidth>
               <InputLabel>Gender</InputLabel>
-              <Select name="userGender" value={formData.userGender} label="Gender" onChange={handleChange}>
+              <Select name="user_gender" value={formData.user_gender} label="Gender" onChange={handleChange}>
                 <MenuItem value="Male">Male</MenuItem>
                 <MenuItem value="Female">Female</MenuItem>
                 <MenuItem value="Other">Other</MenuItem>
               </Select>
             </FormControl>
-            <TextField fullWidth multiline rows={3} label="Bio" name="userBio" value={formData.userBio} onChange={handleChange} />
+            <TextField fullWidth multiline rows={3} label="Bio" name="user_bio" value={formData.user_bio} onChange={handleChange} />
           </div>
         );
       case 1:
@@ -127,15 +127,15 @@ const Onboarding = () => {
           <div className="space-y-4">
             <FormControl fullWidth>
               <InputLabel>Academic Degree</InputLabel>
-              <Select name="userDegree" value={formData.userDegree} label="Academic Degree" onChange={handleChange}>
+              <Select name="user_degree" value={formData.user_degree} label="Academic Degree" onChange={handleChange}>
                 {ACADEMIC_DEGREES.map(d => <MenuItem key={d} value={d}>{d}</MenuItem>)}
               </Select>
             </FormControl>
-            <TextField fullWidth label="University" name="userUniversity" value={formData.userUniversity} onChange={handleChange} />
+            <TextField fullWidth label="University" name="user_university" value={formData.user_university} onChange={handleChange} />
             <TextField fullWidth label="College" name="userCollege" value={formData.userCollege} onChange={handleChange} />
             <FormControl fullWidth>
               <InputLabel>Academic Status</InputLabel>
-              <Select name="userAcademicStatus" value={formData.userAcademicStatus} label="Academic Status" onChange={handleChange}>
+              <Select name="user_academic_status" value={formData.user_academic_status} label="Academic Status" onChange={handleChange}>
                 {ACADEMIC_STATUSES.map(s => <MenuItem key={s} value={s}>{s}</MenuItem>)}
               </Select>
             </FormControl>
@@ -146,11 +146,11 @@ const Onboarding = () => {
           <div className="space-y-4">
              <FormControl fullWidth>
               <InputLabel>Industry</InputLabel>
-              <Select name="userIndustry" value={formData.userIndustry} label="Industry" onChange={handleChange}>
+              <Select name="user_industry" value={formData.user_industry} label="Industry" onChange={handleChange}>
                 {INDUSTRIES.map(i => <MenuItem key={i} value={i}>{i}</MenuItem>)}
               </Select>
             </FormControl>
-            <TextField fullWidth label="Occupation" name="userOccupation" value={formData.userOccupation} onChange={handleChange} />
+            <TextField fullWidth label="Occupation" name="user_occupation" value={formData.user_occupation} onChange={handleChange} />
             <TextField fullWidth label="Specialization" name="userSpecialization" value={formData.userSpecialization} onChange={handleChange} />
           </div>
         );
@@ -163,8 +163,8 @@ const Onboarding = () => {
                 <Chip
                   key={goal}
                   label={goal}
-                  onClick={() => handleMultiSelect('userFutureGoals', goal)}
-                  color={formData.userFutureGoals.includes(goal) ? "primary" : "default"}
+                  onClick={() => handleMultiSelect('user_future_goals', goal)}
+                  color={formData.user_future_goals.includes(goal) ? "primary" : "default"}
                 />
               ))}
             </Box>
@@ -174,8 +174,8 @@ const Onboarding = () => {
                 <Chip
                   key={interest}
                   label={interest}
-                  onClick={() => handleMultiSelect('userResearchInterests', interest)}
-                  color={formData.userResearchInterests.includes(interest) ? "primary" : "default"}
+                  onClick={() => handleMultiSelect('user_research_interests', interest)}
+                  color={formData.user_research_interests.includes(interest) ? "primary" : "default"}
                 />
               ))}
             </Box>
@@ -186,7 +186,7 @@ const Onboarding = () => {
           <div className="space-y-4">
             <FormControl fullWidth>
               <InputLabel>Relationship Intent</InputLabel>
-              <Select name="userRelationshipIntent" value={formData.userRelationshipIntent} label="Relationship Intent" onChange={handleChange}>
+              <Select name="user_relationship_intent" value={formData.user_relationship_intent} label="Relationship Intent" onChange={handleChange}>
                 {RELATIONSHIP_INTENTS.map(i => <MenuItem key={i} value={i}>{i}</MenuItem>)}
               </Select>
             </FormControl>

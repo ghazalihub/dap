@@ -42,28 +42,28 @@ export const DislikesApi = {
 };
 
 export const MatchesApi = {
-  getMatches: async (userId: string) => {
+  getMatches: async (user_id: string) => {
     const q = query(
       collection(db, 'matches'),
-      where('userIds', 'array-contains', userId)
+      where('user_ids', 'array-contains', user_id)
     );
     const snap = await getDocs(q);
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   },
 
-  createMatch: async (userIds: string[]) => {
+  createMatch: async (user_ids: string[]) => {
     await addDoc(collection(db, 'matches'), {
-      userIds,
+      user_ids,
       timestamp: serverTimestamp()
     });
   }
 };
 
 export const ConversationsApi = {
-  getConversations: async (userId: string) => {
+  getConversations: async (user_id: string) => {
     const q = query(
       collection(db, 'conversations'),
-      where('userIds', 'array-contains', userId)
+      where('user_ids', 'array-contains', user_id)
     );
     const snap = await getDocs(q);
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -71,10 +71,10 @@ export const ConversationsApi = {
 };
 
 export const NotificationsApi = {
-  getNotifications: async (userId: string) => {
+  getNotifications: async (user_id: string) => {
     const q = query(
       collection(db, 'notifications'),
-      where('receiverId', '==', userId)
+      where('receiverId', '==', user_id)
     );
     const snap = await getDocs(q);
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));

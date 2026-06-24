@@ -31,11 +31,11 @@ export const ReportDialog = ({ open, onClose, offender, reporter }: ReportDialog
     setLoading(true);
     try {
       await ReportsApi.reportUser({
-        reporterId: reporter.userId,
-        reporterName: reporter.userFullname,
-        offenderId: offender.userId,
-        offenderName: offender.userFullname,
-        offenderPhoto: offender.userProfilePhoto,
+        reporterId: reporter.user_id,
+        reporterName: reporter.user_fullname,
+        offenderId: offender.user_id,
+        offenderName: offender.user_fullname,
+        offenderPhoto: offender.user_profile_photo,
         category,
         reason
       });
@@ -53,7 +53,7 @@ export const ReportDialog = ({ open, onClose, offender, reporter }: ReportDialog
       <DialogTitle className="font-bold">Report Profile</DialogTitle>
       <DialogContent className="space-y-4 pt-4">
         <Typography variant="body2" className="text-gray-500 mb-4">
-          Tell us why you are reporting {offender.userFullname}. Your report is anonymous.
+          Tell us why you are reporting {offender.user_fullname}. Your report is anonymous.
         </Typography>
         <FormControl fullWidth size="small">
           <InputLabel>Category</InputLabel>

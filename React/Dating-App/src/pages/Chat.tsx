@@ -19,7 +19,7 @@ import { BlockedUsersApi } from '../api/blockedUsersApi';
 import { ReportDialog } from '../components/ReportDialog';
 
 const Chat = () => {
-  const { userId } = useParams();
+  const { user_id } = useParams();
   const { user: currentUser } = useUserStore();
   const [otherUser, setOtherUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
@@ -31,14 +31,14 @@ const Chat = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!userId) return;
-    getDoc(doc(db, 'users', userId)).then(s => s.exists() && setOtherUser(s.data() as User));
+    if (!user_id) return;
+    getDoc(doc(db, 'users', user_id)).then(s => s.exists() && setOtherUser(s.data() as User));
 
     const q = query(
       collection(db, 'messages'),
       where('conversationId', 'in', [
-        `${auth.currentUser?.uid}_${userId}`,
-        `${userId}_${auth.currentUser?.uid}`
+        `${auth.currentUser?.uid}_${user_id}`,
+        `${user_id}_${auth.currentUser?.uid}`
       ]),
       orderBy('timestamp', 'asc')
     );
@@ -47,15 +47,15 @@ const Chat = () => {
       setMessages(s.docs.map(d => ({ id: d.id, ...d.data() })));
       scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
     });
-  }, [userId]);
+  }, [user_id]);
 
   const handleSend = async () => {
-    if (!text.trim() || !auth.currentUser || !userId) return;
-    const conversationId = `${auth.currentUser.uid}_${userId}`;
+    if (!text.trim() || !auth.currentUser || !user_id) return;
+    const conversationId = `${auth.currentUser.uid}_${user_id}`;
     await addDoc(collection(db, 'messages'), {
       text: text.trim(),
       senderId: auth.currentUser.uid,
-      receiverId: userId,
+      receiverId: user_id,
       conversationId,
       timestamp: serverTimestamp()
     });
@@ -64,16 +64,16 @@ const Chat = () => {
 
   const handleAction = async (type: string) => {
     setAnchorEl(null);
-    if (!currentUser || !userId) return;
+    if (!currentUser || !user_id) return;
 
     if (type === 'block') {
        if (window.confirm("Are you sure you want to block this user?")) {
-         await BlockedUsersApi.blockUser(currentUser.userId, userId);
+         await BlockedUsersApi.blockUser(currentUser.user_id, user_id);
          alert("User blocked.");
          navigate('/discover');
        }
     } else if (type === 'restrict') {
-       await BlockedUsersApi.blockUser(currentUser.userId, userId, true);
+       await BlockedUsersApi.blockUser(currentUser.user_id, user_id, true);
        alert("Interactions restricted.");
     } else if (type === 'report') {
        setReportOpen(true);
@@ -85,10 +85,10 @@ const Chat = () => {
       <AppBar position="static" color="inherit" elevation={1}>
         <Toolbar>
           <IconButton edge="start" onClick={() => navigate(-1)}><ArrowBack /></IconButton>
-          <Avatar src={otherUser?.userProfilePhoto} className="mx-2" />
+          <Avatar src={otherUser?.user_profile_photo} className="mx-2" />
           <div className="flex-1">
-            <Typography variant="subtitle1" className="font-bold">{otherUser?.userFullname}</Typography>
-            <Typography variant="caption" className="text-gray-500">{otherUser?.userOccupation}</Typography>
+            <Typography variant="subtitle1" className="font-bold">{otherUser?.user_fullname}</Typography>
+            <Typography variant="caption" className="text-gray-500">{otherUser?.user_occupation}</Typography>
           </div>
           <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}><MoreVert /></IconButton>
           <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>

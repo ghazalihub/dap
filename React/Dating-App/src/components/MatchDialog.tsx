@@ -30,7 +30,7 @@ export const MatchDialog = ({ open, onClose, matchUser, currentUser }: MatchDial
           transition={{ type: 'spring', damping: 10 }}
         >
            <Typography variant="h3" className="font-black italic text-center">IT'S A MATCH!</Typography>
-           <Typography variant="h6" className="text-center opacity-80">You and {matchUser.userFullname} have liked each other.</Typography>
+           <Typography variant="h6" className="text-center opacity-80">You and {matchUser.user_fullname} have liked each other.</Typography>
         </motion.div>
 
         <div className="flex items-center gap-4 relative">
@@ -39,7 +39,7 @@ export const MatchDialog = ({ open, onClose, matchUser, currentUser }: MatchDial
              animate={{ x: 0, opacity: 1 }}
              transition={{ delay: 0.3 }}
            >
-              <Avatar src={currentUser.userProfilePhoto} className="w-32 h-32 border-4 border-white shadow-xl" />
+              <Avatar src={currentUser.user_profile_photo} className="w-32 h-32 border-4 border-white shadow-xl" />
            </motion.div>
 
            <motion.div
@@ -56,7 +56,7 @@ export const MatchDialog = ({ open, onClose, matchUser, currentUser }: MatchDial
              animate={{ x: 0, opacity: 1 }}
              transition={{ delay: 0.3 }}
            >
-              <Avatar src={matchUser.userProfilePhoto} className="w-32 h-32 border-4 border-white shadow-xl" />
+              <Avatar src={matchUser.user_profile_photo} className="w-32 h-32 border-4 border-white shadow-xl" />
            </motion.div>
         </div>
 

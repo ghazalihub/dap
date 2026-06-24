@@ -38,20 +38,20 @@ const Discover = () => {
     loadData();
   }, [mode]);
 
-  const handleSwipe = async (userId: string, direction: 'left' | 'right') => {
+  const handleSwipe = async (user_id: string, direction: 'left' | 'right') => {
     if (!currentUser) return;
 
     if (direction === 'right') {
-       const isMatch = await LikesApi.likeUser(currentUser.userId, userId);
+       const isMatch = await LikesApi.likeUser(currentUser.user_id, user_id);
        if (isMatch) {
-          const mUser = users.find(u => u.userId === userId);
+          const mUser = users.find(u => u.user_id === user_id);
           setMatchUser(mUser);
           setShowMatch(true);
        }
     } else {
-       await DislikesApi.dislikeUser(currentUser.userId, userId);
+       await DislikesApi.dislikeUser(currentUser.user_id, user_id);
     }
-    setUsers(prev => prev.filter(u => u.userId !== userId));
+    setUsers(prev => prev.filter(u => u.user_id !== user_id));
   };
 
   if (loading) return <Box className="flex justify-center p-10"><CircularProgress /></Box>;
@@ -81,10 +81,10 @@ const Discover = () => {
           {users.length > 0 ? (
             users.slice(0, 2).reverse().map((user, index) => (
               <SwipeCard
-                key={user.userId}
+                key={user.user_id}
                 user={user}
                 isTop={index === (users.length > 1 ? 1 : 0)}
-                onSwipe={(dir) => handleSwipe(user.userId, dir)}
+                onSwipe={(dir) => handleSwipe(user.user_id, dir)}
               />
             ))
           ) : (
@@ -98,13 +98,13 @@ const Discover = () => {
 
       <div className="flex justify-center gap-8 py-6">
           <IconButton
-            onClick={() => users[0] && handleSwipe(users[0].userId, 'left')}
+            onClick={() => users[0] && handleSwipe(users[0].user_id, 'left')}
             className="w-16 h-16 bg-white shadow-xl text-red-500 border border-gray-100"
           >
              <Close fontSize="large" />
           </IconButton>
           <IconButton
-            onClick={() => users[0] && handleSwipe(users[0].userId, 'right')}
+            onClick={() => users[0] && handleSwipe(users[0].user_id, 'right')}
             className="w-16 h-16 bg-white shadow-xl text-green-500 border border-gray-100"
           >
              <Favorite fontSize="large" />
@@ -143,7 +143,7 @@ const SwipeCard = ({ user, onSwipe, isTop }: any) => {
       className="cursor-grab active:cursor-grabbing"
     >
       <Paper className="h-full rounded-[2rem] overflow-hidden shadow-2xl relative border border-gray-100">
-         <img src={user.userProfilePhoto} className="w-full h-full object-cover" />
+         <img src={user.user_profile_photo} className="w-full h-full object-cover" />
 
          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
 
@@ -151,10 +151,10 @@ const SwipeCard = ({ user, onSwipe, isTop }: any) => {
             <Box className="flex justify-between items-end mb-2">
                <div>
                   <Typography variant="h4" className="font-bold flex items-center gap-2">
-                    {user.userFullname}
-                    {user.userIsVerified && <CheckCircle className="text-blue-400" />}
+                    {user.user_fullname}
+                    {user.user_is_verified && <CheckCircle className="text-blue-400" />}
                   </Typography>
-                  <Typography variant="subtitle1" className="opacity-80">{user.userDegree} @ {user.userUniversity}</Typography>
+                  <Typography variant="subtitle1" className="opacity-80">{user.user_degree} @ {user.user_university}</Typography>
                </div>
                <div className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/30">
                   <Typography variant="caption" className="font-black text-white">{user.compatibility?.score}%</Typography>
@@ -162,8 +162,8 @@ const SwipeCard = ({ user, onSwipe, isTop }: any) => {
             </Box>
 
             <div className="flex flex-wrap gap-2 mb-4">
-                <Chip label={user.userInstitution} size="small" className="bg-white/10 text-white border-white/20" variant="outlined" />
-                <Chip label={user.userOccupation} size="small" className="bg-white/10 text-white border-white/20" variant="outlined" />
+                <Chip label={user.user_institution} size="small" className="bg-white/10 text-white border-white/20" variant="outlined" />
+                <Chip label={user.user_occupation} size="small" className="bg-white/10 text-white border-white/20" variant="outlined" />
             </div>
 
             <div className="space-y-1">

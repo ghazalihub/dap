@@ -13,6 +13,12 @@ import Notifications from './pages/Notifications';
 import Settings from './pages/Settings';
 import SocialStats from './pages/SocialStats';
 import Passport from './pages/Passport';
+import AboutUs from './pages/AboutUs';
+import DeleteAccount from './pages/DeleteAccount';
+import DislikedProfiles from './pages/DislikedProfiles';
+import ProfileDetail from './pages/ProfileDetail';
+import SplashScreen from './pages/SplashScreen';
+import UpdateLocation from './pages/UpdateLocation';
 import { auth, db } from './api/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -43,9 +49,9 @@ const AppContent = () => {
     return unsubscribe;
   }, [setUser]);
 
-  if (loading) return null;
+  if (loading) return <SplashScreen />;
 
-  if (user && user.userStatus !== 'active') {
+  if (user && user.user_status !== 'active') {
     return <BlockedAccount user={user} />;
   }
 
@@ -58,7 +64,7 @@ const AppContent = () => {
           <Route path="/signin" element={<PageWrapper><SignIn /></PageWrapper>} />
           <Route path="/onboarding" element={<PageWrapper><Onboarding /></PageWrapper>} />
           <Route path="/discover" element={user ? <PageWrapper><Discover /></PageWrapper> : <Navigate to="/signin" />} />
-          <Route path="/chat/:userId" element={user ? <PageWrapper><Chat /></PageWrapper> : <Navigate to="/signin" />} />
+          <Route path="/chat/:user_id" element={user ? <PageWrapper><Chat /></PageWrapper> : <Navigate to="/signin" />} />
           <Route path="/community" element={user ? <PageWrapper><Community /></PageWrapper> : <Navigate to="/signin" />} />
           <Route path="/premium" element={user ? <PageWrapper><Premium /></PageWrapper> : <Navigate to="/signin" />} />
           <Route path="/profile" element={user ? <PageWrapper><Profile /></PageWrapper> : <Navigate to="/signin" />} />
@@ -67,6 +73,11 @@ const AppContent = () => {
           <Route path="/settings" element={user ? <PageWrapper><Settings /></PageWrapper> : <Navigate to="/signin" />} />
           <Route path="/social" element={user ? <PageWrapper><SocialStats /></PageWrapper> : <Navigate to="/signin" />} />
           <Route path="/passport" element={user ? <PageWrapper><Passport /></PageWrapper> : <Navigate to="/signin" />} />
+            <Route path="/about" element={<PageWrapper><AboutUs /></PageWrapper>} />
+            <Route path="/delete-account" element={user ? <PageWrapper><DeleteAccount /></PageWrapper> : <Navigate to="/signin" />} />
+            <Route path="/disliked" element={user ? <PageWrapper><DislikedProfiles /></PageWrapper> : <Navigate to="/signin" />} />
+            <Route path="/profile/:user_id" element={user ? <PageWrapper><ProfileDetail /></PageWrapper> : <Navigate to="/signin" />} />
+            <Route path="/update-location" element={user ? <PageWrapper><UpdateLocation /></PageWrapper> : <Navigate to="/signin" />} />
           <Route path="/" element={<Navigate to="/discover" />} />
         </Routes>
       </AnimatePresence>

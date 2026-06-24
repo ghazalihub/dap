@@ -20,8 +20,8 @@ const ModerationCenter = () => {
     fetchReports();
   }, []);
 
-  const handleSanction = async (userId: string, action: string) => {
-    const userRef = doc(db, 'users', userId);
+  const handleSanction = async (user_id: string, action: string) => {
+    const userRef = doc(db, 'users', user_id);
     let status: 'active' | 'suspended' | 'banned' = 'active';
     let expiry = null;
 
@@ -34,9 +34,9 @@ const ModerationCenter = () => {
     }
 
     await updateDoc(userRef, {
-      userStatus: status,
-      sanctionExpiry: expiry,
-      sanctionReason: "Policy violation reported by community."
+      user_status: status,
+      sanction_expiry: expiry,
+      sanction_reason: "Policy violation reported by community."
     });
 
     alert(`User ${action}ed successfully.`);

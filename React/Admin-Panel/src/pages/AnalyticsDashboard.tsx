@@ -24,19 +24,19 @@ const AnalyticsDashboard = () => {
         const users = usersSnap.docs.map(d => d.data());
 
         const totalUsers = users.length;
-        const verifiedUsers = users.filter((u: any) => u.userIsVerified).length;
+        const verifiedUsers = users.filter((u: any) => u.user_is_verified).length;
 
         // Calculate Institution Stats
         const instMap: any = {};
         users.forEach((u: any) => {
-          if (u.userInstitution) instMap[u.userInstitution] = (instMap[u.userInstitution] || 0) + 1;
+          if (u.user_institution) instMap[u.user_institution] = (instMap[u.user_institution] || 0) + 1;
         });
         const institutionData = Object.entries(instMap).map(([name, value]) => ({ name, value })).slice(0, 5);
 
         // Calculate Profession Stats
         const profMap: any = {};
         users.forEach((u: any) => {
-          if (u.userIndustry) profMap[u.userIndustry] = (profMap[u.userIndustry] || 0) + 1;
+          if (u.user_industry) profMap[u.user_industry] = (profMap[u.user_industry] || 0) + 1;
         });
         const professionData = Object.entries(profMap).map(([name, value]) => ({ name, value })).slice(0, 5);
 
