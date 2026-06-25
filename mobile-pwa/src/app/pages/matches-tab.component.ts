@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { DocumentSnapshot, DocumentData } from '@angular/fire/firestore';
 import { MatchesService } from '../services/api/matches.service';

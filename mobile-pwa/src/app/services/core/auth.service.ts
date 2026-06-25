@@ -3,10 +3,11 @@ import {
   Auth,
   signInWithCredential,
   PhoneAuthProvider,
-  verifyPhoneNumber,
   signOut,
   onAuthStateChanged,
-  User as FirebaseUser
+  User as FirebaseUser,
+  signInWithPhoneNumber,
+  RecaptchaVerifier
 } from '@angular/fire/auth';
 import {
   Firestore,
@@ -83,7 +84,9 @@ export class AuthService {
     if (!user) return;
 
     try {
-      const token = await getToken(this.messaging);
+      const token = await getToken(this.messaging, {
+        vapidKey: 'YOUR_VAPID_KEY'
+      });
       // Note: TOPIC subscription usually handled on backend for web
       // But we'll follow the logic flow
 
@@ -110,12 +113,15 @@ export class AuthService {
   }): Promise<void> {
     console.log('phoneNumber is:', params.phoneNumber);
     try {
-      const phoneProvider = new PhoneAuthProvider(this.auth);
-      const verificationId = await phoneProvider.verifyPhoneNumber(
+      const confirmationResult = await signInWithPhoneNumber(
+        this.auth,
         params.phoneNumber,
         params.recaptchaVerifier
       );
-      params.codeSent(verificationId);
+      params.codeSent(confirmationResult.verificationId);
+      // Store confirmationResult globally to use in signInWithOTP if needed,
+      // though PhoneAuthProvider.credential works with verificationId + code.
+      (this as any)._confirmationResult = confirmationResult;
     } catch (error: any) {
       console.error('verificationFailed() -> error:', error);
       params.onError('invalid_number', error.message);
