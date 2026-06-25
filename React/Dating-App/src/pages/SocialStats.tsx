@@ -7,8 +7,10 @@ import { ArrowBack, CheckCircle } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db, auth } from '../api/firebase';
+import { useUserStore } from '../store/userStore';
 
 const SocialStats = () => {
+  const { user: currentUser } = useUserStore();
   const [activeTab, setActiveTab] = useState('likes');
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,9 +61,9 @@ const SocialStats = () => {
                    <CardMedia
                      component="img"
                      image={u.photo || 'https://via.placeholder.com/300'}
-                     className="h-full object-cover blur-[4px]" // Blur for non-VIP
+                     className={`h-full object-cover ${!currentUser?.user_is_vip ? 'blur-[8px]' : ''}`}
                    />
-                   <Box className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-4 text-center">
+                   <Box className={`absolute inset-0 flex flex-col items-center justify-center p-4 text-center ${!currentUser?.user_is_vip ? 'bg-black/40' : 'bg-gradient-to-t from-black/60 to-transparent items-start justify-end'}`}>
                       <Typography variant="subtitle2" className="text-white font-bold mb-4">Scholar {i+1}</Typography>
                       <button className="bg-primary text-white px-4 py-1.5 rounded-full text-xs font-bold">Unlock View</button>
                    </Box>

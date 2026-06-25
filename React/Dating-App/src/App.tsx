@@ -19,6 +19,9 @@ import DislikedProfiles from './pages/DislikedProfiles';
 import ProfileDetail from './pages/ProfileDetail';
 import SplashScreen from './pages/SplashScreen';
 import UpdateLocation from './pages/UpdateLocation';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import { NotificationSnackbar } from './components/NotificationSnackbar';
 import { auth, db } from './api/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -78,6 +81,8 @@ const AppContent = () => {
             <Route path="/disliked" element={user ? <PageWrapper><DislikedProfiles /></PageWrapper> : <Navigate to="/signin" />} />
             <Route path="/profile/:user_id" element={user ? <PageWrapper><ProfileDetail /></PageWrapper> : <Navigate to="/signin" />} />
             <Route path="/update-location" element={user ? <PageWrapper><UpdateLocation /></PageWrapper> : <Navigate to="/signin" />} />
+            <Route path="/terms" element={<PageWrapper><TermsOfService /></PageWrapper>} />
+            <Route path="/privacy" element={<PageWrapper><PrivacyPolicy /></PageWrapper>} />
           <Route path="/" element={<Navigate to="/discover" />} />
         </Routes>
       </AnimatePresence>
@@ -99,6 +104,7 @@ const AppContent = () => {
           </BottomNavigation>
         </Paper>
       )}
+        <NotificationSnackbar />
     </div>
   );
 };

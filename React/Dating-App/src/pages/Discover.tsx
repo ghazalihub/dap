@@ -14,13 +14,16 @@ import { doc, getDoc } from 'firebase/firestore';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { LikesApi, DislikesApi } from '../api/socialApi';
 import { MatchDialog } from '../components/MatchDialog';
+import { useUserStore } from '../store/userStore';
+import { VipDialog } from '../components/VipDialog';
 
 const Discover = () => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const { user: currentUser } = useUserStore();
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState('standard');
   const [showMatch, setShowMatch] = useState(false);
+  const [showVip, setShowVip] = useState(false);
   const [matchUser, setMatchUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -40,6 +43,11 @@ const Discover = () => {
 
   const handleSwipe = async (user_id: string, direction: 'left' | 'right') => {
     if (!currentUser) return;
+
+    if (!currentUser.user_is_vip && mode !== 'standard') {
+       setShowVip(true);
+       return;
+    }
 
     if (direction === 'right') {
        const isMatch = await LikesApi.likeUser(currentUser.user_id, user_id);
@@ -119,6 +127,8 @@ const Discover = () => {
           currentUser={currentUser}
         />
       )}
+
+      <VipDialog open={showVip} onClose={() => setShowVip(false)} />
     </div>
   );
 };
@@ -127,6 +137,9 @@ const SwipeCard = ({ user, onSwipe, isTop }: any) => {
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 200], [-25, 25]);
   const opacity = useTransform(x, [-200, -150, 0, 150, 200], [0, 1, 1, 1, 0]);
+
+  const likeOpacity = useTransform(x, [0, 100], [0, 1]);
+  const nopeOpacity = useTransform(x, [0, -100], [0, 1]);
 
   const handleDragEnd = (_: any, info: any) => {
     if (info.offset.x > 100) onSwipe('right');
@@ -142,8 +155,22 @@ const SwipeCard = ({ user, onSwipe, isTop }: any) => {
       whileTap={{ scale: 0.98 }}
       className="cursor-grab active:cursor-grabbing"
     >
-      <Paper className="h-full rounded-[2rem] overflow-hidden shadow-2xl relative border border-gray-100">
+      <Paper className="h-full rounded-[2rem] overflow-hidden shadow-2xl relative border border-gray-100 bg-white">
          <img src={user.user_profile_photo} className="w-full h-full object-cover" />
+
+         <motion.div
+           style={{ opacity: likeOpacity }}
+           className="absolute top-10 left-10 border-4 border-green-500 rounded-xl px-4 py-1 rotate-[-20deg] z-20 pointer-events-none"
+         >
+            <Typography variant="h4" className="font-black text-green-500">LIKE</Typography>
+         </motion.div>
+
+         <motion.div
+           style={{ opacity: nopeOpacity }}
+           className="absolute top-10 right-10 border-4 border-red-500 rounded-xl px-4 py-1 rotate-[20deg] z-20 pointer-events-none"
+         >
+            <Typography variant="h4" className="font-black text-red-500">NOPE</Typography>
+         </motion.div>
 
          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
 

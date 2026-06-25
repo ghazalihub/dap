@@ -7,10 +7,12 @@ import {
 import { Search, Visibility, Edit, Block } from '@mui/icons-material';
 import { db } from '../api/firebase';
 import { collection, getDocs, query, limit } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 
 const UsersScreen = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -85,7 +87,7 @@ const UsersScreen = () => {
                    <Typography variant="caption">{u.userLastLogin?.seconds ? new Date(u.userLastLogin.seconds * 1000).toLocaleDateString() : 'N/A'}</Typography>
                 </TableCell>
                 <TableCell className="text-right">
-                   <IconButton size="small"><Visibility fontSize="small"/></IconButton>
+                   <IconButton size="small" onClick={() => navigate(`/user/${u.id}`)}><Visibility fontSize="small"/></IconButton>
                    <IconButton size="small"><Edit fontSize="small"/></IconButton>
                    <IconButton size="small" color="error"><Block fontSize="small"/></IconButton>
                 </TableCell>

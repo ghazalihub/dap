@@ -7,9 +7,11 @@ import {
 import { Search, LocationOn, TravelExplore, History } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
+import { VipDialog } from '../components/VipDialog';
 
 const Passport = () => {
   const [query, setQuery] = useState('');
+  const [showVip, setShowVip] = useState(false);
   const { user, updateUser } = useUserStore();
   const navigate = useNavigate();
 
@@ -21,6 +23,10 @@ const Passport = () => {
   ];
 
   const handleSelect = (loc: any) => {
+    if (!user?.user_is_vip) {
+       setShowVip(true);
+       return;
+    }
     updateUser({
       user_location: {
         latitude: loc.lat,
@@ -85,6 +91,8 @@ const Passport = () => {
             Reset to Oxford
          </Button>
       </Box>
+
+      <VipDialog open={showVip} onClose={() => setShowVip(false)} />
     </div>
   );
 };

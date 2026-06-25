@@ -5,6 +5,7 @@ import ModerationCenter from './pages/ModerationCenter';
 import PushNotifications from './pages/PushNotifications';
 import AppSettings from './pages/AppSettings';
 import UsersScreen from './pages/UsersScreen';
+import UserProfileView from './pages/UserProfileView';
 import CommunitiesManagement from './pages/CommunitiesManagement';
 import InAppPurchases from './pages/InAppPurchases';
 import AdminProfile from './pages/AdminProfile';
@@ -114,6 +115,7 @@ const App = () => {
             <Route path="/notifications" element={<PushNotifications />} />
             <Route path="/settings" element={<AppSettings />} />
             <Route path="/users" element={<UsersScreen />} />
+            <Route path="/user/:user_id" element={<UserProfileView />} />
             <Route path="/communities" element={<CommunitiesManagement />} />
             <Route path="/purchases" element={<InAppPurchases />} />
             <Route path="/admin" element={<AdminProfile />} />
